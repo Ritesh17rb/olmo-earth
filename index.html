@@ -219,7 +219,7 @@
         <div id="cities-grid" class="mb-5">
             <h3 class="h4 mb-4 border-bottom pb-2">Available Cities</h3>
             <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-4">
                     <div class="card h-100 city-card" onclick="loadCity('bangalore', this)">
                         <div class="card-img-placeholder"><i class="bi bi-buildings"></i></div>
                         <div class="card-body">
@@ -234,7 +234,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-4">
                     <div class="card h-100 city-card" onclick="loadCity('chennai', this)">
                         <div class="card-img-placeholder"><i class="bi bi-water"></i></div>
                         <div class="card-body">
@@ -249,7 +249,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-4">
                     <div class="card h-100 city-card" onclick="loadCity('delhi', this)">
                         <div class="card-img-placeholder"><i class="bi bi-geo-alt"></i></div>
                         <div class="card-body">
@@ -266,7 +266,7 @@
                 </div>
 
                 <!-- International Cities -->
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-4">
                     <div class="card h-100 city-card" onclick="loadCity('paris', this)">
                         <div class="card-img-placeholder"><i class="bi bi-torii-gate"></i></div>
                         <div class="card-body">
@@ -281,7 +281,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3">
+                <div class="col-md-6 col-lg-4">
                     <div class="card h-100 city-card" onclick="loadCity('london', this)">
                         <div class="card-img-placeholder"><i class="bi bi-clock"></i></div>
                         <div class="card-body">
@@ -291,6 +291,21 @@
                             </div>
                             <p class="card-text small text-muted">Historic Metropolis. Detailed ward-level analysis of
                                 urban fabric and vegetation.</p>
+                            <div class="d-flex align-items-center gap-2 mt-3"><span class="badge bg-primary">Analysis
+                                    Ready</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 city-card" onclick="loadCity('singapore', this)">
+                        <div class="card-img-placeholder"><i class="bi bi-building-fill"></i></div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Singapore</h5><span
+                                    class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-10">Asia</span>
+                            </div>
+                            <p class="card-text small text-muted">The Garden City. High-resolution analysis of urban
+                                density and tropical vegetation.</p>
                             <div class="d-flex align-items-center gap-2 mt-3"><span class="badge bg-primary">Analysis
                                     Ready</span></div>
                         </div>
@@ -724,7 +739,8 @@ new_shape = transform(transformer.transform, original_shape)
                 chennai: { url: 'chennai.html', name: 'Chennai Analysis' },
                 delhi: { url: 'delhi.html', name: 'Delhi Analysis' },
                 paris: { url: 'paris.html', name: 'Paris Analysis' },
-                london: { url: 'london.html', name: 'London Analysis' }
+                london: { url: 'london.html', name: 'London Analysis' },
+                singapore: { url: 'singapore.html', name: 'Singapore Analysis' }
             };
 
             function loadCity(cityKey, cardElement) {
