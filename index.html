@@ -21,6 +21,19 @@
             max-inline-size: 44rem;
         }
 
+        .app-content {
+            font-size: 1.05rem;
+        }
+
+        .app-content .small,
+        .app-content small {
+            font-size: 0.95rem;
+        }
+
+        .app-content .lead {
+            font-size: 1.35rem;
+        }
+
         .city-card {
             transition: all 0.2s ease;
             border: 1px solid var(--bs-border-color);
@@ -130,6 +143,18 @@
             transform: translateX(5px);
         }
 
+        .deep-dive-content,
+        .replicate-content {
+            font-size: 1.05rem;
+        }
+
+        .deep-dive-content .small,
+        .replicate-content .small,
+        .deep-dive-content small,
+        .replicate-content small {
+            font-size: 0.95rem;
+        }
+
         .pipeline-line {
             position: absolute;
             left: 31px;
@@ -216,6 +241,7 @@
                     comparing data from 2019 to 2024. </p>
             </div>
         </div>
+        <div class="app-content">
         <div id="cities-grid" class="mb-5">
             <h3 class="h4 mb-4 border-bottom pb-2">Available Cities</h3>
             <div class="row g-4">
@@ -313,7 +339,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-5 fade-in-up" style="animation-delay: 0.2s;">
+        <div class="mb-5 fade-in-up deep-dive-content" style="animation-delay: 0.2s;">
             <h3 class="h4 mb-4 border-bottom pb-2">Technical Deep Dive</h3>
             <div class="row g-4">
                 <div class="col-lg-6">
@@ -342,8 +368,8 @@
                                     </div>
                                     <div>
                                         <div class="fw-bold small">Vision Transformer (ViT) Architecture</div>
-                                        <div class="small text-muted">Processes 70% masked images to learn robust
-                                            spatial features. <a href="https://arxiv.org/abs/2010.11929"
+                                        <div class="small text-muted">Learns rich spatial features from multi-band
+                                            imagery. <a href="https://arxiv.org/abs/2010.11929"
                                                 class="text-muted text-decoration-underline">Read Paper</a></div>
                                     </div>
                                 </div>
@@ -353,8 +379,8 @@
                                     </div>
                                     <div>
                                         <div class="fw-bold small">768-Dimension Embeddings</div>
-                                        <div class="small text-muted">High-fidelity vector representations that encode
-                                            deep semantic information about every 10m² patch of earth.</div>
+                                        <div class="small text-muted">High-fidelity vectors that encode semantic
+                                            information for every 10 m x 10 m patch of earth.</div>
                                     </div>
                                 </div>
                                 <div class="feature-item p-2 rounded d-flex align-items-center gap-3">
@@ -390,8 +416,8 @@
                                             style="width: 32px; height: 32px;">1</div>
                                         <div>
                                             <div class="fw-bold">Ingestion via STAC API</div>
-                                            <div class="small text-muted">Automated querying and validataion of
-                                                cloud-free imagery from <a
+                                            <div class="small text-muted">Automated querying and validation of
+                                                low-cloud imagery from <a
                                                     href="https://planetarycomputer.microsoft.com/"
                                                     class="text-muted text-decoration-underline">Microsoft Planetary
                                                     Computer</a>.</div>
@@ -404,9 +430,9 @@
                                         <div class="step-indicator bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
                                             style="width: 32px; height: 32px;">2</div>
                                         <div>
-                                            <div class="fw-bold">GPU Inference</div>
-                                            <div class="small text-muted">Running the 300M parameter model on NVIDIA
-                                                GPUs to generate terabytes of embedding data.</div>
+                                            <div class="fw-bold">Model Inference</div>
+                                            <div class="small text-muted">Runs the OlmoEarth foundation model on GPU
+                                                when available to generate dense embeddings.</div>
                                         </div>
                                     </div>
                                 </div>
@@ -432,16 +458,65 @@
         <div class="mb-5 fade-in-up" style="animation-delay: 0.4s;">
             <h3 class="h4 mb-4 border-bottom pb-2">How to Replicate this Analysis</h3>
             <div class="card border-0 bg-dark-subtle">
-                <div class="card-body p-4">
+                <div class="card-body p-4 replicate-content">
                     <p class="lead text-secondary mb-4">You can run this exact analysis for your own city using our
-                        open-source toolkit. The workflow is designed to be modular, handling everything from data
-                        ingestion to visualization.</p>
+                        open-source toolkit. Follow the minimal, correct workflow below: prepare data windows, run GPU
+                        embeddings, analyze wards, and generate the map.</p>
 
                     <div class="accordion" id="replicationAccordion">
-                        <!-- Step 1: System Requirements -->
-                        <div class="accordion-item bg-black border border-secondary mb-3 rounded overflow-hidden">
+                        <!-- Step 0: Minimal File Structure -->
+                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
                             <h2 class="accordion-header">
-                                <button class="accordion-button bg-black text-light shadow-none collapsed py-3"
+                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseZero">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-info bg-opacity-25 p-2 rounded text-info">
+                                            <i class="bi bi-folder2-open fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold fs-5">0. Minimal File Structure</div>
+                                            <div class="small text-body-secondary">Know where files go before you run
+                                                scripts</div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="collapseZero" class="accordion-collapse collapse"
+                                data-bs-parent="#replicationAccordion">
+                                <div class="accordion-body text-secondary pt-0">
+                                    <hr class="border-secondary mb-4">
+                                    <div class="bg-dark p-3 rounded border border-secondary shadow-sm">
+                                        <code class="text-info font-monospace small"
+                                            style="white-space: pre;">olmoearth/
+├── cities_config.json
+├── config.json
+├── prepare_city.sh
+├── run_prediction.py
+├── analyze_city.py
+├── generate_visualization.py
+├── process_all_cities.py
+├── check_status.sh
+├── windows/
+│   └── &lt;city_key&gt;/
+│       └── windows/
+│           ├── 2019/
+│           └── 2024/
+├── public_html/
+│   └── &lt;city_key&gt;.html
+└── &lt;city_key&gt;.geojson
+                                        </code>
+                                    </div>
+                                    <div class="small mt-2">You only need to add your GeoJSON and update
+                                        <code>cities_config.json</code>; all other files already exist in this repo.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 1: System Requirements -->
+                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
                                     type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="bg-primary bg-opacity-25 p-2 rounded text-primary">
@@ -449,7 +524,7 @@
                                         </div>
                                         <div>
                                             <div class="fw-bold fs-5">1. System Requirements & Setup</div>
-                                            <div class="small text-secondary">Hardware specs and installation</div>
+                                            <div class="small text-body-secondary">Hardware specs and installation</div>
                                         </div>
                                     </div>
                                 </button>
@@ -460,33 +535,43 @@
                                     <hr class="border-secondary mb-4">
                                     <div class="row g-4 mb-4">
                                         <div class="col-md-6">
-                                            <h6 class="text-light fw-bold mb-3"><i class="bi bi-cpu me-2"></i>Hardware
+                                            <h6 class="text-body-emphasis fw-bold mb-3"><i
+                                                    class="bi bi-cpu me-2"></i>Hardware
                                             </h6>
                                             <ul class="list-unstyled d-flex flex-column gap-2 small">
                                                 <li
                                                     class="d-flex justify-content-between border-bottom border-secondary pb-2">
                                                     <span>OS</span>
-                                                    <span class="text-light">Linux (Ubuntu 20.04+)</span>
+                                                    <span class="text-body-emphasis">Linux (Ubuntu 20.04+)</span>
                                                 </li>
                                                 <li
                                                     class="d-flex justify-content-between border-bottom border-secondary pb-2">
                                                     <span>GPU</span>
-                                                    <span class="text-light">NVIDIA (8GB+ VRAM)</span>
+                                                    <span class="text-body-emphasis">NVIDIA (8GB+ VRAM, optional)</span>
+                                                </li>
+                                                <li
+                                                    class="d-flex justify-content-between border-bottom border-secondary pb-2">
+                                                    <span>Python</span>
+                                                    <span class="text-body-emphasis">3.10+</span>
                                                 </li>
                                                 <li
                                                     class="d-flex justify-content-between border-bottom border-secondary pb-2">
                                                     <span>RAM</span>
-                                                    <span class="text-light">32GB Recommended</span>
+                                                    <span class="text-body-emphasis">32GB Recommended</span>
                                                 </li>
                                                 <li
                                                     class="d-flex justify-content-between border-bottom border-secondary pb-2">
                                                     <span>Storage</span>
-                                                    <span class="text-light">100GB+ SSD</span>
+                                                    <span class="text-body-emphasis">100GB+ SSD</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between pb-2">
+                                                    <span>Network</span>
+                                                    <span class="text-body-emphasis">Stable for large downloads</span>
                                                 </li>
                                             </ul>
                                         </div>
                                         <div class="col-md-6">
-                                            <h6 class="text-light fw-bold mb-3"><i
+                                            <h6 class="text-body-emphasis fw-bold mb-3"><i
                                                     class="bi bi-code-square me-2"></i>Environment</h6>
                                             <div class="bg-dark p-3 rounded border border-secondary shadow-sm">
                                                 <code class="text-success small opacity-75">
@@ -495,10 +580,12 @@
                                                     cd olmo-earth<br><br>
                                                     # 2. Virtual Environment<br>
                                                     python3 -m venv venv && source venv/bin/activate<br><br>
-                                                    # 3. Install (CUDA 11.8)<br>
-                                                    pip install -e .
+                                                    # 3. Install rslearn + data sources<br>
+                                                    pip install -e rslearn_repo[extra]
                                                 </code>
                                             </div>
+                                            <div class="small text-muted mt-2">Note: downloads are large; plan disk
+                                                space and time accordingly.</div>
                                         </div>
                                     </div>
                                 </div>
@@ -506,18 +593,18 @@
                         </div>
 
                         <!-- Step 2: Configuration -->
-                        <div class="accordion-item bg-black border border-secondary mb-3 rounded overflow-hidden">
+                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
                             <h2 class="accordion-header">
-                                <button class="accordion-button bg-black text-light shadow-none collapsed py-3"
+                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
                                     type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="bg-warning bg-opacity-25 p-2 rounded text-warning">
                                             <i class="bi bi-gear-fill fs-5"></i>
                                         </div>
                                         <div>
-                                            <div class="fw-bold fs-5">2. Configuration of City & Model</div>
-                                            <div class="small text-secondary">GeoJSON, config.json, and model parameters
-                                            </div>
+                                            <div class="fw-bold fs-5">2. City Configuration</div>
+                                            <div class="small text-body-secondary">GeoJSON + city mapping file
+                                                (required)</div>
                                         </div>
                                     </div>
                                 </button>
@@ -529,24 +616,25 @@
 
                                     <!-- GeoJSON Section -->
                                     <div class="mb-4">
-                                        <h6 class="text-light fw-bold d-flex align-items-center gap-2">
+                                        <h6 class="text-body-emphasis fw-bold d-flex align-items-center gap-2">
                                             <i class="bi bi-geo-alt"></i> 1. Prepare GeoJSON (EPSG:4326)
                                         </h6>
                                         <p class="small text-secondary">
-                                            The analysis requires a GeoJSON file with Granular Units (wards/districts).
+                                            The analysis requires a GeoJSON file with granular units (wards/districts).
                                             <span class="text-warning">Crucially, it must be in the WGS84 coordinate
                                                 system (Lat/Lon).</span>
                                             If your government data is in meters (e.g., EPSG:27700 or EPSG:32643), you
-                                            <strong>must</strong> reproject it.
+                                            <strong>must</strong> reproject it first.
                                         </p>
                                         <div class="bg-dark p-3 rounded border border-secondary shadow-sm">
-                                            <div class="small text-muted mb-2">// Example: Converting London data from
-                                                National Grid to WGS84 with reproject_city.py</div>
+                                            <div class="small text-muted mb-2">// Example: reproject to WGS84 using
+                                                pyproj</div>
                                             <code class="text-info font-monospace small" style="white-space: pre;">
 from pyproj import Transformer
+from shapely.ops import transform
 import json
 
-# Setup transformer: Source CRS (e.g., EPSG:27700) -> Target CRS (EPSG:4326)
+# Setup transformer: Source CRS -> EPSG:4326
 transformer = Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
 
 # ... load your json features ...
@@ -556,34 +644,48 @@ new_shape = transform(transformer.transform, original_shape)
                                         </div>
                                     </div>
 
-                                    <!-- Config Files Section -->
                                     <div class="row g-4">
                                         <div class="col-lg-6">
-                                            <h6 class="text-light fw-bold d-flex align-items-center gap-2">
-                                                <i class="bi bi-file-earmark-code"></i> 2. Platform Config (config.json)
+                                            <h6 class="text-body-emphasis fw-bold d-flex align-items-center gap-2">
+                                                <i class="bi bi-file-earmark-code"></i> 2. Add City to cities_config.json
                                             </h6>
-                                            <p class="small">The <code>config.json</code> defines the satellite layers
-                                                (Sentinel-2 L2A, Sentinel-1) and their band structures. You typically
-                                                don't need to change this unless adding new sensors.</p>
+                                            <p class="small">Register your GeoJSON file, field mappings, and the window
+                                                folders created by the pipeline. The <code>windows_dirs</code> should
+                                                match what <code>prepare_city.sh</code> creates.</p>
                                         </div>
                                         <div class="col-lg-6">
-                                            <h6 class="text-light fw-bold d-flex align-items-center gap-2">
-                                                <i class="bi bi-sliders"></i> 3. Model Config (model.yaml)
-                                            </h6>
-                                            <p class="small">The <code>model.yaml</code> is automatically generated for
-                                                each city/year during runtime. It controls the <code>rslearn</code>
-                                                pipeline, specifying the model architecture (ViT), input window size
-                                                (128x128), and batch size.</p>
+                                            <div class="bg-dark p-3 rounded border border-secondary shadow-sm h-100">
+                                                <code class="text-info font-monospace small"
+                                                    style="white-space: pre;">
+"your_city": {
+  "name": "Your City",
+  "country": "Country",
+  "geojson_file": "your_city.geojson",
+  "center": [lon, lat],
+  "ward_id_field": "WARD_ID",
+  "ward_name_field": "WARD_NAME",
+  "ward_no_field": "WARD_NO",
+  "years": ["2019", "2024"],
+  "windows_dirs": {
+    "2019": "windows/your_city/windows/2019",
+    "2024": "windows/your_city/windows/2024"
+  },
+  "output_prefix": "your_city"
+}
+                                                </code>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="small text-muted mt-2">If you are unsure about field names, open your
+                                        GeoJSON and inspect the <code>properties</code> object for one feature.</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Step 3: Execution -->
-                        <div class="accordion-item bg-black border border-secondary mb-3 rounded overflow-hidden">
+                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
                             <h2 class="accordion-header">
-                                <button class="accordion-button bg-black text-light shadow-none collapsed py-3"
+                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
                                     type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="bg-success bg-opacity-25 p-2 rounded text-success">
@@ -591,17 +693,18 @@ new_shape = transform(transformer.transform, original_shape)
                                         </div>
                                         <div>
                                             <div class="fw-bold fs-5">3. Execution Pipeline</div>
-                                            <div class="small text-secondary">Data Prep, Inference, and Analysis</div>
+                                            <div class="small text-body-secondary">Download, Embeddings, Analysis,
+                                                Visualization</div>
                                         </div>
                                     </div>
                                 </button>
                             </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse show"
+                            <div id="collapseThree" class="accordion-collapse collapse"
                                 data-bs-parent="#replicationAccordion">
                                 <div class="accordion-body text-secondary pt-0">
                                     <hr class="border-secondary mb-4">
-                                    <p class="small">Run the automated scripts in sequence. This process can take
-                                        several hours depending on your internet speed and GPU.</p>
+                                    <p class="small">Run the scripts in order. This can take hours depending on data
+                                        size, bandwidth, and GPU availability.</p>
 
                                     <div class="d-flex flex-column gap-3">
                                         <div class="d-flex gap-3">
@@ -611,11 +714,12 @@ new_shape = transform(transformer.transform, original_shape)
                                                 <div class="h-100 border-start border-secondary my-1"></div>
                                             </div>
                                             <div class="pb-3 w-100">
-                                                <h6 class="text-light fw-bold mb-1">Data Preparation</h6>
+                                                <h6 class="text-body-emphasis fw-bold mb-1">Data Preparation</h6>
                                                 <code
-                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">./prepare_city.sh</code>
-                                                <div class="small">Queries Microsoft Planetary Computer and downloads
-                                                    raw Sentinel tiles for your defined ROI.</div>
+                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">./prepare_city.sh &lt;city_key&gt;</code>
+                                                <div class="small">Builds windows, queries imagery, downloads and
+                                                    materializes Sentinel data into <code>windows/&lt;city_key&gt;</code>.
+                                                </div>
                                             </div>
                                         </div>
 
@@ -626,11 +730,11 @@ new_shape = transform(transformer.transform, original_shape)
                                                 <div class="h-100 border-start border-secondary my-1"></div>
                                             </div>
                                             <div class="pb-3 w-100">
-                                                <h6 class="text-light fw-bold mb-1">Inference (GPU)</h6>
+                                                <h6 class="text-body-emphasis fw-bold mb-1">Inference (GPU)</h6>
                                                 <code
-                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">python3 run_prediction.py</code>
-                                                <div class="small">Generates the <code>model.yaml</code> dynamically and
-                                                    runs the OlmoEarth ViT to create 768-dimensional embeddings.</div>
+                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">python3 run_prediction.py &lt;city_key&gt;</code>
+                                                <div class="small">Runs OlmoEarth to generate embeddings (GPU is used
+                                                    automatically if available).</div>
                                             </div>
                                         </div>
 
@@ -638,22 +742,79 @@ new_shape = transform(transformer.transform, original_shape)
                                             <div class="d-flex flex-column align-items-center">
                                                 <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center text-light small fw-bold"
                                                     style="width: 24px; height: 24px;">3</div>
+                                                <div class="h-100 border-start border-secondary my-1"></div>
                                             </div>
                                             <div class="w-100">
-                                                <h6 class="text-light fw-bold mb-1">Metric Analysis</h6>
+                                                <h6 class="text-body-emphasis fw-bold mb-1">Metric Analysis</h6>
                                                 <code
-                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">python3 analyze_city.py</code>
-                                                <div class="small">Aggregates pixel-level embeddings into ward-level
-                                                    metrics (Urban Density, Vegetation).</div>
+                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">python3 analyze_city.py &lt;city_key&gt;</code>
+                                                <div class="small">Aggregates embeddings into ward metrics and writes a
+                                                    detailed JSON report.</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex gap-3">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center text-light small fw-bold"
+                                                    style="width: 24px; height: 24px;">4</div>
+                                            </div>
+                                            <div class="w-100">
+                                                <h6 class="text-body-emphasis fw-bold mb-1">Visualization</h6>
+                                                <code
+                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">python3 generate_visualization.py &lt;city_key&gt;</code>
+                                                <div class="small">Outputs <code>public_html/&lt;city_key&gt;.html</code>
+                                                    for the interactive map.</div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="mt-4 small text-muted">
+                                        Tip: run everything in one go with <code>python3 process_all_cities.py
+                                            &lt;city_key&gt;</code> and check progress with
+                                        <code>./check_status.sh</code>.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Quick Troubleshooting -->
+                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-danger bg-opacity-25 p-2 rounded text-danger">
+                                            <i class="bi bi-life-preserver fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold fs-5">4. Quick Troubleshooting</div>
+                                            <div class="small text-body-secondary">Fix common blockers fast</div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse"
+                                data-bs-parent="#replicationAccordion">
+                                <div class="accordion-body text-secondary pt-0">
+                                    <hr class="border-secondary mb-4">
+                                    <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                                        <li><span class="text-body-emphasis">GeoJSON not found</span> → verify
+                                            <code>geojson_file</code> path in <code>cities_config.json</code>.
+                                        </li>
+                                        <li><span class="text-body-emphasis">No embeddings detected</span> → confirm
+                                            <code>windows/&lt;city_key&gt;/windows/2019</code> and <code>2024</code>
+                                            exist and that <code>run_prediction.py</code> completed.</li>
+                                        <li><span class="text-body-emphasis">Slow downloads</span> → reduce workers in
+                                            <code>prepare_city.sh</code> or run overnight.</li>
+                                        <li><span class="text-body-emphasis">CPU-only machine</span> → inference still
+                                            works but takes much longer.</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         <div id="viewer-container" class="d-none">
             <div id="viewer-header">
