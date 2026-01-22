@@ -145,14 +145,19 @@
 
         .deep-dive-content,
         .replicate-content {
-            font-size: 1.05rem;
+            font-size: 1.25rem;
         }
 
         .deep-dive-content .small,
         .replicate-content .small,
         .deep-dive-content small,
         .replicate-content small {
-            font-size: 0.95rem;
+            font-size: 1.1rem;
+        }
+
+        .deep-dive-content .card-title,
+        .replicate-content .card-title {
+            font-size: 1.5rem;
         }
 
         .pipeline-line {
@@ -200,6 +205,131 @@
             justify-content: center;
             z-index: 10;
         }
+
+        /* Enhanced Copy Button Styles */
+        .code-block-wrapper {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.15) 0%, rgba(13, 110, 253, 0.25) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(13, 110, 253, 0.4);
+            color: #60a5fa;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.25) 0%, rgba(13, 110, 253, 0.35) 100%);
+            border-color: rgba(13, 110, 253, 0.6);
+            color: #93c5fd;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(13, 110, 253, 0.2), 0 4px 6px -2px rgba(13, 110, 253, 0.1);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.25) 100%);
+            border-color: rgba(34, 197, 94, 0.5);
+            color: #86efac;
+            animation: successPulse 0.5s ease-out;
+        }
+
+        @keyframes successPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .copy-btn i {
+            font-size: 1rem;
+        }
+
+        /* Enhanced code block styling */
+        .code-block-wrapper {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .code-block-wrapper:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Resource links styling */
+        .resource-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(13, 110, 253, 0.1) 100%);
+            border: 1px solid rgba(13, 110, 253, 0.2);
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--bs-primary);
+        }
+
+        .resource-link:hover {
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.15) 0%, rgba(13, 110, 253, 0.25) 100%);
+            border-color: rgba(13, 110, 253, 0.5);
+            color: var(--bs-body-color);
+            transform: translateX(5px);
+            box-shadow: 0 4px 6px -1px rgba(13, 110, 253, 0.3);
+        }
+
+        .resource-link i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+            color: var(--bs-primary);
+        }
+
+        .resource-link:hover i {
+            color: var(--bs-primary);
+            opacity: 0.9;
+        }
+
+        .resource-link .fw-semibold {
+            color: inherit;
+            font-weight: 600;
+        }
+
+        .resource-link .text-muted {
+            color: var(--bs-secondary-color) !important;
+            opacity: 0.85;
+        }
+
+        .resource-link:hover .text-muted {
+            opacity: 1;
+            color: var(--bs-secondary-color) !important;
+        }
+
+        /* Override text-secondary for better visibility in dark mode only */
+        [data-bs-theme="dark"] .text-secondary {
+            color: #adb5bd !important;
+        }
     </style>
 </head>
 
@@ -231,724 +361,687 @@
     </nav>
     <div class="container mt-5">
         <div class="text-center mb-5">
-            <h1 class="display-3 fw-bold mb-3">Urban Analysis Platform</h1>
-            <h2 class="display-6 text-muted mb-4">Analyze urban growth,
+            <h1 class="display-2 fw-bold mb-3">Urban Analysis Platform</h1>
+            <h2 class="display-5 text-muted mb-4">Analyze urban growth,
                 vegetation,
                 and density changes over time.</h2>
-            <div class="mx-auto narrative text-secondary fs-5">
+            <div class="mx-auto narrative text-secondary fs-4">
                 <p>OlmoEarth leverages satellite imagery and machine learning to track urban evolution. Explore detailed
                     metrics for cities worldwide,
                     comparing data from 2019 to 2024. </p>
             </div>
         </div>
         <div class="app-content">
-        <div id="cities-grid" class="mb-5">
-            <h3 class="h4 mb-4 border-bottom pb-2">Available Cities</h3>
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 city-card" onclick="loadCity('bangalore', this)">
-                        <div class="card-img-placeholder"><i class="bi bi-buildings"></i></div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Bangalore</h5><span
-                                    class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10">India</span>
+            <div id="cities-grid" class="mb-5">
+                <h3 class="h4 mb-4 border-bottom pb-2">Available Cities</h3>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 city-card" onclick="loadCity('bangalore', this)">
+                            <div class="card-img-placeholder"><i class="bi bi-buildings"></i></div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Bangalore</h5><span
+                                        class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10">India</span>
+                                </div>
+                                <p class="card-text small text-muted">IT Hub of India. Analysis of rapid
+                                    urbanization and green cover loss.</p>
+                                <div class="d-flex align-items-center gap-2 mt-3"><span
+                                        class="badge bg-primary">Analysis
+                                        Ready</span></div>
                             </div>
-                            <p class="card-text small text-muted">IT Hub of India. Analysis of rapid
-                                urbanization and green cover loss.</p>
-                            <div class="d-flex align-items-center gap-2 mt-3"><span class="badge bg-primary">Analysis
-                                    Ready</span></div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 city-card" onclick="loadCity('chennai', this)">
-                        <div class="card-img-placeholder"><i class="bi bi-water"></i></div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Chennai</h5><span
-                                    class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10">India</span>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 city-card" onclick="loadCity('chennai', this)">
+                            <div class="card-img-placeholder"><i class="bi bi-water"></i></div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Chennai</h5><span
+                                        class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10">India</span>
+                                </div>
+                                <p class="card-text small text-muted">Coastal metropolis. Tracking urban density
+                                    and vegetation changes.</p>
+                                <div class="d-flex align-items-center gap-2 mt-3"><span
+                                        class="badge bg-primary">Analysis
+                                        Ready</span></div>
                             </div>
-                            <p class="card-text small text-muted">Coastal metropolis. Tracking urban density
-                                and vegetation changes.</p>
-                            <div class="d-flex align-items-center gap-2 mt-3"><span class="badge bg-primary">Analysis
-                                    Ready</span></div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 city-card" onclick="loadCity('delhi', this)">
-                        <div class="card-img-placeholder"><i class="bi bi-geo-alt"></i></div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Delhi</h5><span
-                                    class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10">India</span>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 city-card" onclick="loadCity('delhi', this)">
+                            <div class="card-img-placeholder"><i class="bi bi-geo-alt"></i></div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Delhi</h5><span
+                                        class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10">India</span>
+                                </div>
+                                <p class="card-text small text-muted">National Capital Territory.
+                                    Analysis of urban expansion and green cover.</p>
+                                <div class="d-flex align-items-center gap-2 mt-3"><span
+                                        class="badge bg-primary">Analysis
+                                        Ready</span></div>
                             </div>
-                            <p class="card-text small text-muted">National Capital Territory.
-                                Analysis of urban expansion and green cover.</p>
-                            <div class="d-flex align-items-center gap-2 mt-3"><span class="badge bg-primary">Analysis
-                                    Ready</span></div>
                         </div>
                     </div>
-                </div>
 
-                <!-- International Cities -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 city-card" onclick="loadCity('paris', this)">
-                        <div class="card-img-placeholder"><i class="bi bi-torii-gate"></i></div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Paris</h5><span
-                                    class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10">France</span>
+                    <!-- International Cities -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 city-card" onclick="loadCity('paris', this)">
+                            <div class="card-img-placeholder"><i class="bi bi-torii-gate"></i></div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Paris</h5><span
+                                        class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10">France</span>
+                                </div>
+                                <p class="card-text small text-muted">The City of Light. Analyzing green spaces and
+                                    urban
+                                    density in the 20 arrondissements.</p>
+                                <div class="d-flex align-items-center gap-2 mt-3"><span
+                                        class="badge bg-primary">Analysis
+                                        Ready</span></div>
                             </div>
-                            <p class="card-text small text-muted">The City of Light. Analyzing green spaces and urban
-                                density in the 20 arrondissements.</p>
-                            <div class="d-flex align-items-center gap-2 mt-3"><span class="badge bg-primary">Analysis
-                                    Ready</span></div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 city-card" onclick="loadCity('london', this)">
-                        <div class="card-img-placeholder"><i class="bi bi-clock"></i></div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">London</h5><span
-                                    class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10">UK</span>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 city-card" onclick="loadCity('london', this)">
+                            <div class="card-img-placeholder"><i class="bi bi-clock"></i></div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">London</h5><span
+                                        class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10">UK</span>
+                                </div>
+                                <p class="card-text small text-muted">Historic Metropolis. Detailed ward-level analysis
+                                    of
+                                    urban fabric and vegetation.</p>
+                                <div class="d-flex align-items-center gap-2 mt-3"><span
+                                        class="badge bg-primary">Analysis
+                                        Ready</span></div>
                             </div>
-                            <p class="card-text small text-muted">Historic Metropolis. Detailed ward-level analysis of
-                                urban fabric and vegetation.</p>
-                            <div class="d-flex align-items-center gap-2 mt-3"><span class="badge bg-primary">Analysis
-                                    Ready</span></div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 city-card" onclick="loadCity('singapore', this)">
-                        <div class="card-img-placeholder"><i class="bi bi-building-fill"></i></div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Singapore</h5><span
-                                    class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-10">Asia</span>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 city-card" onclick="loadCity('singapore', this)">
+                            <div class="card-img-placeholder"><i class="bi bi-building-fill"></i></div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Singapore</h5><span
+                                        class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-10">Asia</span>
+                                </div>
+                                <p class="card-text small text-muted">The Garden City. High-resolution analysis of urban
+                                    density and tropical vegetation.</p>
+                                <div class="d-flex align-items-center gap-2 mt-3"><span
+                                        class="badge bg-primary">Analysis
+                                        Ready</span></div>
                             </div>
-                            <p class="card-text small text-muted">The Garden City. High-resolution analysis of urban
-                                density and tropical vegetation.</p>
-                            <div class="d-flex align-items-center gap-2 mt-3"><span class="badge bg-primary">Analysis
-                                    Ready</span></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="mb-5 fade-in-up deep-dive-content" style="animation-delay: 0.2s;">
-            <h3 class="h4 mb-4 border-bottom pb-2">Technical Deep Dive</h3>
-            <div class="row g-4">
-                <div class="col-lg-6">
-                    <div class="card h-100 border-0 bg-dark-subtle tech-card overflow-hidden">
-                        <div class="card-body position-relative z-1">
-                            <div class="tech-icon-bg"><i class="bi bi-cpu"></i></div>
-                            <h5 class="card-title d-flex align-items-center gap-2">
-                                <i class="bi bi-cpu text-primary"></i>OlmoEarth Foundation Model
-                            </h5>
-                            <p class="card-text mt-3 text-secondary">
-                                At the core of this platform lies the <a
-                                    href="https://github.com/allenai/olmoearth_pretrain"
-                                    class="text-decoration-none fw-bold text-primary">OlmoEarth Foundation Model</a>, a
-                                state-of-the-art vision transformer trained on petabytes of satellite imagery by the <a
-                                    href="https://allenai.org/" class="text-decoration-none">Allen Institute for AI</a>.
+            <div class="mb-5 mt-5 pt-5 fade-in-up deep-dive-content" style="animation-delay: 0.2s;">
+                <h3 class="h4 mb-4 border-bottom pb-2">Technical Deep Dive</h3>
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card h-100 border-0 bg-body-tertiary tech-card overflow-hidden">
+                            <div class="card-body position-relative z-1">
+                                <div class="tech-icon-bg"><i class="bi bi-cpu"></i></div>
+                                <h5 class="card-title d-flex align-items-center gap-2">
+                                    <i class="bi bi-cpu text-primary"></i>OlmoEarth Foundation Model
+                                </h5>
+                                <p class="card-text mt-3 text-secondary">
+                                    At the core of this platform lies the <a
+                                        href="https://github.com/allenai/olmoearth_pretrain"
+                                        class="text-decoration-none fw-bold text-primary">OlmoEarth Foundation
+                                        Model</a>, a
+                                    state-of-the-art vision transformer trained on petabytes of satellite imagery by the
+                                    <a href="https://allenai.org/" class="text-decoration-none">Allen Institute for
+                                        AI</a>.
+                                </p>
+                                <p class="card-text text-secondary">
+                                    Unlike traditional remote sensing that relies on simple algebraic band combinations
+                                    (like NDVI for vegetation), OlmoEarth "sees" the world semantically, understanding
+                                    texture, context, and complex spatial relationships.
+                                </p>
+                                <div class="mt-4">
+                                    <div class="feature-item p-2 rounded mb-2 d-flex align-items-center gap-3">
+                                        <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded p-2">
+                                            <i class="bi bi-layers-fill"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold small">Vision Transformer (ViT) Architecture</div>
+                                            <div class="small text-muted">Learns rich spatial features from multi-band
+                                                imagery. <a href="https://arxiv.org/abs/2010.11929"
+                                                    class="text-muted text-decoration-underline">Read Paper</a></div>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item p-2 rounded mb-2 d-flex align-items-center gap-3">
+                                        <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded p-2">
+                                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold small">768-Dimension Embeddings</div>
+                                            <div class="small text-muted">High-fidelity vectors that encode semantic
+                                                information for every 10 m x 10 m patch of earth.</div>
+                                        </div>
+                                    </div>
+                                    <div class="feature-item p-2 rounded d-flex align-items-center gap-3">
+                                        <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded p-2">
+                                            <i class="bi bi-intersect"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold small">Multi-Modal Fusion</div>
+                                            <div class="small text-muted">Combines Sentinel-2 (Optical) and Sentinel-1
+                                                (Radar) data for all-weather monitoring.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card h-100 border-0 bg-body-tertiary tech-card overflow-hidden">
+                            <div class="card-body position-relative z-1">
+                                <div class="tech-icon-bg"><i class="bi bi-hdd-network"></i></div>
+                                <h5 class="card-title d-flex align-items-center gap-2">
+                                    <i class="bi bi-hdd-network text-success"></i>Our Analysis Pipeline
+                                </h5>
+                                <p class="card-text mt-3 text-secondary">
+                                    We built an end-to-end automated pipeline to transform raw satellite data into
+                                    actionable insights.
+                                </p>
+                                <div class="pipeline-container mt-4 d-flex flex-column gap-3">
+                                    <div
+                                        class="pipeline-step p-3 rounded bg-body-tertiary border border-dark-subtle position-relative">
+                                        <div class="d-flex gap-3 align-items-center">
+                                            <div class="step-indicator bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 32px; height: 32px;">1</div>
+                                            <div>
+                                                <div class="fw-bold">Ingestion via STAC API</div>
+                                                <div class="small text-muted">Automated querying and validation of
+                                                    low-cloud imagery from <a
+                                                        href="https://planetarycomputer.microsoft.com/"
+                                                        class="text-muted text-decoration-underline">Microsoft Planetary
+                                                        Computer</a>.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="pipeline-step p-3 rounded bg-body-tertiary border border-dark-subtle position-relative">
+                                        <div class="d-flex gap-3 align-items-center">
+                                            <div class="step-indicator bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 32px; height: 32px;">2</div>
+                                            <div>
+                                                <div class="fw-bold">Model Inference</div>
+                                                <div class="small text-muted">Runs the OlmoEarth foundation model on GPU
+                                                    when available to generate dense embeddings.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pipeline-step p-3 rounded bg-body-tertiary border border-dark-subtle">
+                                        <div class="d-flex gap-3 align-items-center">
+                                            <div class="step-indicator bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 32px; height: 32px;">3</div>
+                                            <div>
+                                                <div class="fw-bold">Geospatial Analysis</div>
+                                                <div class="small text-muted">Spatial aggregation of embeddings within
+                                                    administrative boundaries (wards) to compute change metrics.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How to Replicate Section -->
+            <div class="mb-5 fade-in-up" style="animation-delay: 0.4s;">
+                <h3 class="h4 mb-4 border-bottom pb-2">How to Replicate this Analysis</h3>
+                <div class="card border-0 bg-body-tertiary">
+                    <div class="card-body p-4 replicate-content">
+                        <p class="lead text-secondary mb-5">
+                            This analysis uses the <a href="https://github.com/allenai/rslearn"
+                                class="text-primary fw-bold">rslearn</a> library
+                            to download satellite imagery and the <a
+                                href="https://github.com/allenai/olmoearth_pretrain"
+                                class="text-primary fw-bold">OlmoEarth</a>
+                            foundation model to generate semantic embeddings. Follow these steps to replicate for any
+                            city.
+                        </p>
+
+                        <!-- Step 1: Installation -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-download me-2 text-primary"></i>Step 1: Install
+                                rslearn</h5>
+                            <p class="text-secondary">Clone and install the rslearn library (requires Python 3.10+,
+                                Python 3.12 recommended):</p>
+                            <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <code
+                                    class="d-block text-white mb-2">git clone https://github.com/allenai/rslearn.git</code>
+                                <code class="d-block text-white mb-2">cd rslearn</code>
+                                <code class="d-block text-white">pip install .[extra]</code>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Dataset Config -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-gear me-2 text-warning"></i>Step 2: Create Dataset
+                                Configuration</h5>
+                            <p class="text-secondary">Create a working directory and add <code>config.json</code> to
+                                define data sources:</p>
+                            <div class="code-block-wrapper bg-dark p-3 rounded border border-secondary shadow-sm">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <div class="d-flex justify-content-between border-bottom border-gray-700 pb-2 mb-2">
+                                    <span class="text-muted small">config.json</span>
+                                </div>
+                                <pre class="text-info font-monospace small m-0"
+                                    style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;">{
+  "layers": {
+    "sentinel2_l2a": {
+      "band_sets": [{"bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B11", "B12"], "dtype": "uint16"}],
+      "data_source": {
+        "class_path": "rslearn.data_sources.planetary_computer.Sentinel2",
+        "init_args": {"cache_dir": "cache/planetary_computer", "harmonize": true, "sort_by": "eo:cloud_cover"},
+        "ingest": true,
+        "query_config": {"max_matches": 4, "period_duration": "30d", "space_mode": "PER_PERIOD_MOSAIC"}
+      },
+      "type": "raster"
+    },
+    "sentinel1": {
+      "band_sets": [{"bands": ["vv", "vh"], "dtype": "float32", "nodata_vals": [-32768, -32768]}],
+      "data_source": {
+        "class_path": "rslearn.data_sources.planetary_computer.Sentinel1",
+        "init_args": {"cache_dir": "cache/planetary_computer", "query": {"sar:instrument_mode": {"eq": "IW"}, "sar:polarizations": {"eq": ["VV", "VH"]}}},
+        "ingest": true,
+        "query_config": {"max_matches": 4, "period_duration": "30d", "space_mode": "PER_PERIOD_MOSAIC"}
+      },
+      "type": "raster"
+    },
+    "embeddings": {
+      "band_sets": [{"dtype": "float32", "num_bands": 768}],
+      "type": "raster"
+    }
+  }
+}</pre>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Create Windows -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-grid-3x3 me-2 text-success"></i>Step 3: Define
+                                Spatiotemporal Windows</h5>
+                            <p class="text-secondary">Create windows (spatial grids) for your city. Replace coordinates
+                                with your city's bounding box:</p>
+                            <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <code class="d-block text-success mb-2"># For 2019 baseline</code>
+                                <code
+                                    class="d-block text-white mb-3">rslearn dataset add_windows --root ./dataset --group 2019 --name default --utm --resolution 10 --src_crs EPSG:4326 --box=77.4,12.8,77.8,13.2 --start 2018-01-01T00:00:00+00:00 --end 2020-01-01T00:00:00+00:00 --grid_size 1024</code>
+
+                                <code class="d-block text-success mb-2"># For 2024 current</code>
+                                <code
+                                    class="d-block text-white">rslearn dataset add_windows --root ./dataset --group 2024 --name default --utm --resolution 10 --src_crs EPSG:4326 --box=77.4,12.8,77.8,13.2 --start 2023-01-01T00:00:00+00:00 --end 2025-01-01T00:00:00+00:00 --grid_size 1024</code>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Download Imagery -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-cloud-download me-2 text-info"></i>Step 4: Download
+                                Satellite Imagery</h5>
+                            <p class="text-secondary">Query, download, and process satellite images from Planetary
+                                Computer:</p>
+                            <div class="d-flex flex-column gap-3">
+                                <div class="code-block-wrapper p-3 rounded bg-dark border border-secondary">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <div class="fw-bold text-white mb-2">Prepare (Query Available Imagery)</div>
+                                    <code
+                                        class="d-block text-warning small">rslearn dataset prepare --root ./dataset --workers 32 --disabled-layers landsat --retry-max-attempts 5 --retry-backoff-seconds 5</code>
+                                </div>
+                                <div class="code-block-wrapper p-3 rounded bg-dark border border-secondary">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <div class="fw-bold text-white mb-2">Ingest (Download)</div>
+                                    <code
+                                        class="d-block text-warning small">rslearn dataset ingest --root ./dataset --workers 16 --disabled-layers landsat --retry-max-attempts 5 --retry-backoff-seconds 5</code>
+                                </div>
+                                <div class="code-block-wrapper p-3 rounded bg-dark border border-secondary">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <div class="fw-bold text-white mb-2">Materialize (Crop/Mosaic to Windows)</div>
+                                    <code
+                                        class="d-block text-warning small">rslearn dataset materialize --root ./dataset --workers 32 --no-use-initial-job --disabled-layers landsat --retry-max-attempts 5 --retry-backoff-seconds 5</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Model Config -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-cpu me-2 text-danger"></i>Step 5: Create Model
+                                Configuration</h5>
+                            <p class="text-secondary">Create <code>model.yaml</code> to configure OlmoEarth inference:
                             </p>
-                            <p class="card-text text-secondary">
-                                Unlike traditional remote sensing that relies on simple algebraic band combinations
-                                (like NDVI for vegetation), OlmoEarth "sees" the world semantically, understanding
-                                texture, context, and complex spatial relationships.
-                            </p>
-                            <div class="mt-4">
-                                <div class="feature-item p-2 rounded mb-2 d-flex align-items-center gap-3">
-                                    <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded p-2">
-                                        <i class="bi bi-layers-fill"></i>
-                                    </div>
+                            <div class="code-block-wrapper bg-dark p-3 rounded border border-secondary shadow-sm">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <div class="d-flex justify-content-between border-bottom border-gray-700 pb-2 mb-2">
+                                    <span class="text-muted small">model.yaml</span>
+                                </div>
+                                <pre class="text-info font-monospace small m-0"
+                                    style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;">model:
+  class_path: rslearn.train.lightning_module.RslearnLightningModule
+  init_args:
+    model:
+      class_path: rslearn.models.singletask.SingleTaskModel
+      init_args:
+        encoder:
+          - class_path: rslearn.models.olmoearth_pretrain.model.OlmoEarth
+            init_args:
+              model_id: OLMOEARTH_V1_BASE
+              patch_size: 4
+        decoder:
+          - class_path: rslearn.train.tasks.embedding.EmbeddingHead
+    optimizer:
+      class_path: rslearn.train.optimizer.AdamW
+data:
+  class_path: rslearn.train.data_module.RslearnDataModule
+  init_args:
+    path: ./dataset
+    inputs:
+      sentinel2_l2a:
+        data_type: "raster"
+        layers: ["sentinel2_l2a", "sentinel2_l2a.1", "sentinel2_l2a.2", "sentinel2_l2a.3"]
+        bands: ["B02", "B03", "B04", "B08", "B05", "B06", "B07", "B8A", "B11", "B12", "B01", "B09"]
+        passthrough: true
+        dtype: FLOAT32
+        load_all_layers: true
+      sentinel1:
+        data_type: "raster"
+        layers: ["sentinel1", "sentinel1.1", "sentinel1.2", "sentinel1.3"]
+        bands: ["vv", "vh"]
+        passthrough: true
+        dtype: FLOAT32
+        load_all_layers: true
+    task:
+      class_path: rslearn.train.tasks.embedding.EmbeddingTask
+    batch_size: 8
+    num_workers: 32
+    predict_config:
+      transforms:
+        - class_path: rslearn.models.olmoearth_pretrain.norm.OlmoEarthNormalize
+          init_args:
+            band_names:
+              sentinel2_l2a: ["B02", "B03", "B04", "B08", "B05", "B06", "B07", "B8A", "B11", "B12", "B01", "B09"]
+              sentinel1: ["vv", "vh"]
+      load_all_patches: true
+      patch_size: 64
+      overlap_ratio: 0.5
+trainer:
+  callbacks:
+    - class_path: rslearn.train.prediction_writer.RslearnWriter
+      init_args:
+        path: placeholder
+        output_layer: embeddings
+        merger:
+          class_path: rslearn.train.prediction_writer.RasterMerger
+          init_args:
+            padding: 4
+            downsample_factor: 4</pre>
+                            </div>
+                        </div>
+
+                        <!-- Step 6: Generate Embeddings -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge me-2 text-warning"></i>Step 6:
+                                Generate Embeddings</h5>
+                            <p class="text-secondary">Run the OlmoEarth model to compute 768-dimensional embeddings:</p>
+                            <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <code class="d-block text-white">rslearn model predict --config model.yaml</code>
+                            </div>
+                            <div class="alert alert-info mt-3 py-2 small d-flex align-items-center gap-2">
+                                <i class="bi bi-info-circle-fill"></i>
+                                <div>GPU is recommended but not required. The model will automatically use GPU if
+                                    available.</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 7: Analysis -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart me-2 text-primary"></i>Step 7: Analyze
+                                Ward-Level Changes</h5>
+                            <p class="text-secondary">Create custom Python scripts to:</p>
+                            <ul class="text-secondary">
+                                <li>Load your city's ward boundaries (GeoJSON in <strong>EPSG:4326</strong>)</li>
+                                <li>Extract embeddings from rslearn dataset windows</li>
+                                <li>Aggregate embeddings within ward boundaries</li>
+                                <li>Calculate change metrics (2019 vs 2024)</li>
+                                <li>Generate visualization HTML</li>
+                            </ul>
+                            <div class="alert alert-warning py-2 small d-flex align-items-center gap-2">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <div>The analysis scripts are custom and specific to your ward structure. See the <a
+                                        href="https://github.com/allenai/rslearn/blob/master/docs/examples/OlmoEarthEmbeddings.md"
+                                        class="text-decoration-underline" target="_blank">rslearn documentation</a> for
+                                    guidance.</div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Resources -->
+                        <div class="border-top pt-4 mt-5">
+                            <h5 class="fw-bold mb-4"><i class="bi bi-book me-2 text-info"></i>Additional Resources</h5>
+                            <div class="d-flex flex-column">
+                                <a href="https://github.com/allenai/rslearn" class="resource-link" target="_blank">
+                                    <i class="bi bi-github"></i>
                                     <div>
-                                        <div class="fw-bold small">Vision Transformer (ViT) Architecture</div>
-                                        <div class="small text-muted">Learns rich spatial features from multi-band
-                                            imagery. <a href="https://arxiv.org/abs/2010.11929"
-                                                class="text-muted text-decoration-underline">Read Paper</a></div>
+                                        <div class="fw-semibold">rslearn GitHub Repository</div>
+                                        <small class="text-muted">Core library for remote sensing datasets and
+                                            models</small>
                                     </div>
-                                </div>
-                                <div class="feature-item p-2 rounded mb-2 d-flex align-items-center gap-3">
-                                    <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded p-2">
-                                        <i class="bi bi-grid-3x3-gap-fill"></i>
-                                    </div>
+                                </a>
+                                <a href="https://github.com/allenai/rslearn/blob/master/docs/examples/OlmoEarthEmbeddings.md"
+                                    class="resource-link" target="_blank">
+                                    <i class="bi bi-file-earmark-text"></i>
                                     <div>
-                                        <div class="fw-bold small">768-Dimension Embeddings</div>
-                                        <div class="small text-muted">High-fidelity vectors that encode semantic
-                                            information for every 10 m x 10 m patch of earth.</div>
+                                        <div class="fw-semibold">OlmoEarth Embeddings Tutorial</div>
+                                        <small class="text-muted">Step-by-step guide for computing embeddings</small>
                                     </div>
-                                </div>
-                                <div class="feature-item p-2 rounded d-flex align-items-center gap-3">
-                                    <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded p-2">
-                                        <i class="bi bi-intersect"></i>
-                                    </div>
+                                </a>
+                                <a href="https://github.com/allenai/olmoearth_pretrain" class="resource-link"
+                                    target="_blank">
+                                    <i class="bi bi-cpu"></i>
                                     <div>
-                                        <div class="fw-bold small">Multi-Modal Fusion</div>
-                                        <div class="small text-muted">Combines Sentinel-2 (Optical) and Sentinel-1
-                                            (Radar) data for all-weather monitoring.</div>
+                                        <div class="fw-semibold">OlmoEarth Model Repository</div>
+                                        <small class="text-muted">Foundation model for Earth observation</small>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card h-100 border-0 bg-dark-subtle tech-card overflow-hidden">
-                        <div class="card-body position-relative z-1">
-                            <div class="tech-icon-bg"><i class="bi bi-hdd-network"></i></div>
-                            <h5 class="card-title d-flex align-items-center gap-2">
-                                <i class="bi bi-hdd-network text-success"></i>Our Analysis Pipeline
-                            </h5>
-                            <p class="card-text mt-3 text-secondary">
-                                We built an end-to-end automated pipeline to transform raw satellite data into
-                                actionable insights.
-                            </p>
-                            <div class="pipeline-container mt-4 d-flex flex-column gap-3">
-                                <div
-                                    class="pipeline-step p-3 rounded bg-body-tertiary border border-dark-subtle position-relative">
-                                    <div class="d-flex gap-3 align-items-center">
-                                        <div class="step-indicator bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
-                                            style="width: 32px; height: 32px;">1</div>
-                                        <div>
-                                            <div class="fw-bold">Ingestion via STAC API</div>
-                                            <div class="small text-muted">Automated querying and validation of
-                                                low-cloud imagery from <a
-                                                    href="https://planetarycomputer.microsoft.com/"
-                                                    class="text-muted text-decoration-underline">Microsoft Planetary
-                                                    Computer</a>.</div>
-                                        </div>
+                                </a>
+                                <a href="https://planetarycomputer.microsoft.com/" class="resource-link"
+                                    target="_blank">
+                                    <i class="bi bi-cloud-download"></i>
+                                    <div>
+                                        <div class="fw-semibold">Microsoft Planetary Computer</div>
+                                        <small class="text-muted">Satellite imagery data source (Sentinel-1 &
+                                            Sentinel-2)</small>
                                     </div>
-                                </div>
-                                <div
-                                    class="pipeline-step p-3 rounded bg-body-tertiary border border-dark-subtle position-relative">
-                                    <div class="d-flex gap-3 align-items-center">
-                                        <div class="step-indicator bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
-                                            style="width: 32px; height: 32px;">2</div>
-                                        <div>
-                                            <div class="fw-bold">Model Inference</div>
-                                            <div class="small text-muted">Runs the OlmoEarth foundation model on GPU
-                                                when available to generate dense embeddings.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="pipeline-step p-3 rounded bg-body-tertiary border border-dark-subtle">
-                                    <div class="d-flex gap-3 align-items-center">
-                                        <div class="step-indicator bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
-                                            style="width: 32px; height: 32px;">3</div>
-                                        <div>
-                                            <div class="fw-bold">Geospatial Analysis</div>
-                                            <div class="small text-muted">Spatial aggregation of embeddings within
-                                                administrative boundaries (wards) to compute change metrics.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- How to Replicate Section -->
-        <div class="mb-5 fade-in-up" style="animation-delay: 0.4s;">
-            <h3 class="h4 mb-4 border-bottom pb-2">How to Replicate this Analysis</h3>
-            <div class="card border-0 bg-dark-subtle">
-                <div class="card-body p-4 replicate-content">
-                    <p class="lead text-secondary mb-4">You can run this exact analysis for your own city using our
-                        open-source toolkit. Follow the minimal, correct workflow below: prepare data windows, run GPU
-                        embeddings, analyze wards, and generate the map.</p>
-
-                    <div class="accordion" id="replicationAccordion">
-                        <!-- Step 0: Minimal File Structure -->
-                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseZero">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-info bg-opacity-25 p-2 rounded text-info">
-                                            <i class="bi bi-folder2-open fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold fs-5">0. Minimal File Structure</div>
-                                            <div class="small text-body-secondary">Know where files go before you run
-                                                scripts</div>
-                                        </div>
-                                    </div>
-                                </button>
-                            </h2>
-                            <div id="collapseZero" class="accordion-collapse collapse"
-                                data-bs-parent="#replicationAccordion">
-                                <div class="accordion-body text-secondary pt-0">
-                                    <hr class="border-secondary mb-4">
-                                    <div class="bg-dark p-3 rounded border border-secondary shadow-sm">
-                                        <code class="text-info font-monospace small"
-                                            style="white-space: pre;">olmoearth/
-├── cities_config.json
-├── config.json
-├── prepare_city.sh
-├── run_prediction.py
-├── analyze_city.py
-├── generate_visualization.py
-├── process_all_cities.py
-├── check_status.sh
-├── windows/
-│   └── &lt;city_key&gt;/
-│       └── windows/
-│           ├── 2019/
-│           └── 2024/
-├── public_html/
-│   └── &lt;city_key&gt;.html
-└── &lt;city_key&gt;.geojson
-                                        </code>
-                                    </div>
-                                    <div class="small mt-2">You only need to add your GeoJSON and update
-                                        <code>cities_config.json</code>; all other files already exist in this repo.
-                                    </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
 
-                        <!-- Step 1: System Requirements -->
-                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-primary bg-opacity-25 p-2 rounded text-primary">
-                                            <i class="bi bi-tools fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold fs-5">1. System Requirements & Setup</div>
-                                            <div class="small text-body-secondary">Hardware specs and installation</div>
-                                        </div>
-                                    </div>
-                                </button>
-                            </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse"
-                                data-bs-parent="#replicationAccordion">
-                                <div class="accordion-body text-secondary pt-0">
-                                    <hr class="border-secondary mb-4">
-                                    <div class="row g-4 mb-4">
-                                        <div class="col-md-6">
-                                            <h6 class="text-body-emphasis fw-bold mb-3"><i
-                                                    class="bi bi-cpu me-2"></i>Hardware
-                                            </h6>
-                                            <ul class="list-unstyled d-flex flex-column gap-2 small">
-                                                <li
-                                                    class="d-flex justify-content-between border-bottom border-secondary pb-2">
-                                                    <span>OS</span>
-                                                    <span class="text-body-emphasis">Linux (Ubuntu 20.04+)</span>
-                                                </li>
-                                                <li
-                                                    class="d-flex justify-content-between border-bottom border-secondary pb-2">
-                                                    <span>GPU</span>
-                                                    <span class="text-body-emphasis">NVIDIA (8GB+ VRAM, optional)</span>
-                                                </li>
-                                                <li
-                                                    class="d-flex justify-content-between border-bottom border-secondary pb-2">
-                                                    <span>Python</span>
-                                                    <span class="text-body-emphasis">3.10+</span>
-                                                </li>
-                                                <li
-                                                    class="d-flex justify-content-between border-bottom border-secondary pb-2">
-                                                    <span>RAM</span>
-                                                    <span class="text-body-emphasis">32GB Recommended</span>
-                                                </li>
-                                                <li
-                                                    class="d-flex justify-content-between border-bottom border-secondary pb-2">
-                                                    <span>Storage</span>
-                                                    <span class="text-body-emphasis">100GB+ SSD</span>
-                                                </li>
-                                                <li class="d-flex justify-content-between pb-2">
-                                                    <span>Network</span>
-                                                    <span class="text-body-emphasis">Stable for large downloads</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h6 class="text-body-emphasis fw-bold mb-3"><i
-                                                    class="bi bi-code-square me-2"></i>Environment</h6>
-                                            <div class="bg-dark p-3 rounded border border-secondary shadow-sm">
-                                                <code class="text-success small opacity-75">
-                                                    # 1. Clone & Setup<br>
-                                                    git clone https://github.com/allenai/olmo-earth.git<br>
-                                                    cd olmo-earth<br><br>
-                                                    # 2. Virtual Environment<br>
-                                                    python3 -m venv venv && source venv/bin/activate<br><br>
-                                                    # 3. Install rslearn + data sources<br>
-                                                    pip install -e rslearn_repo[extra]
-                                                </code>
-                                            </div>
-                                            <div class="small text-muted mt-2">Note: downloads are large; plan disk
-                                                space and time accordingly.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Step 2: Configuration -->
-                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-warning bg-opacity-25 p-2 rounded text-warning">
-                                            <i class="bi bi-gear-fill fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold fs-5">2. City Configuration</div>
-                                            <div class="small text-body-secondary">GeoJSON + city mapping file
-                                                (required)</div>
-                                        </div>
-                                    </div>
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse"
-                                data-bs-parent="#replicationAccordion">
-                                <div class="accordion-body text-secondary pt-0">
-                                    <hr class="border-secondary mb-4">
-
-                                    <!-- GeoJSON Section -->
-                                    <div class="mb-4">
-                                        <h6 class="text-body-emphasis fw-bold d-flex align-items-center gap-2">
-                                            <i class="bi bi-geo-alt"></i> 1. Prepare GeoJSON (EPSG:4326)
-                                        </h6>
-                                        <p class="small text-secondary">
-                                            The analysis requires a GeoJSON file with granular units (wards/districts).
-                                            <span class="text-warning">Crucially, it must be in the WGS84 coordinate
-                                                system (Lat/Lon).</span>
-                                            If your government data is in meters (e.g., EPSG:27700 or EPSG:32643), you
-                                            <strong>must</strong> reproject it first.
-                                        </p>
-                                        <div class="bg-dark p-3 rounded border border-secondary shadow-sm">
-                                            <div class="small text-muted mb-2">// Example: reproject to WGS84 using
-                                                pyproj</div>
-                                            <code class="text-info font-monospace small" style="white-space: pre;">
-from pyproj import Transformer
-from shapely.ops import transform
-import json
-
-# Setup transformer: Source CRS -> EPSG:4326
-transformer = Transformer.from_crs("EPSG:27700", "EPSG:4326", always_xy=True)
-
-# ... load your json features ...
-# Transform each geometry
-new_shape = transform(transformer.transform, original_shape)
-                                            </code>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-4">
-                                        <div class="col-lg-6">
-                                            <h6 class="text-body-emphasis fw-bold d-flex align-items-center gap-2">
-                                                <i class="bi bi-file-earmark-code"></i> 2. Add City to cities_config.json
-                                            </h6>
-                                            <p class="small">Register your GeoJSON file, field mappings, and the window
-                                                folders created by the pipeline. The <code>windows_dirs</code> should
-                                                match what <code>prepare_city.sh</code> creates.</p>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="bg-dark p-3 rounded border border-secondary shadow-sm h-100">
-                                                <code class="text-info font-monospace small"
-                                                    style="white-space: pre;">
-"your_city": {
-  "name": "Your City",
-  "country": "Country",
-  "geojson_file": "your_city.geojson",
-  "center": [lon, lat],
-  "ward_id_field": "WARD_ID",
-  "ward_name_field": "WARD_NAME",
-  "ward_no_field": "WARD_NO",
-  "years": ["2019", "2024"],
-  "windows_dirs": {
-    "2019": "windows/your_city/windows/2019",
-    "2024": "windows/your_city/windows/2024"
-  },
-  "output_prefix": "your_city"
-}
-                                                </code>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="small text-muted mt-2">If you are unsure about field names, open your
-                                        GeoJSON and inspect the <code>properties</code> object for one feature.</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Step 3: Execution -->
-                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-success bg-opacity-25 p-2 rounded text-success">
-                                            <i class="bi bi-play-circle-fill fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold fs-5">3. Execution Pipeline</div>
-                                            <div class="small text-body-secondary">Download, Embeddings, Analysis,
-                                                Visualization</div>
-                                        </div>
-                                    </div>
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse"
-                                data-bs-parent="#replicationAccordion">
-                                <div class="accordion-body text-secondary pt-0">
-                                    <hr class="border-secondary mb-4">
-                                    <p class="small">Run the scripts in order. This can take hours depending on data
-                                        size, bandwidth, and GPU availability.</p>
-
-                                    <div class="d-flex flex-column gap-3">
-                                        <div class="d-flex gap-3">
-                                            <div class="d-flex flex-column align-items-center">
-                                                <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center text-light small fw-bold"
-                                                    style="width: 24px; height: 24px;">1</div>
-                                                <div class="h-100 border-start border-secondary my-1"></div>
-                                            </div>
-                                            <div class="pb-3 w-100">
-                                                <h6 class="text-body-emphasis fw-bold mb-1">Data Preparation</h6>
-                                                <code
-                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">./prepare_city.sh &lt;city_key&gt;</code>
-                                                <div class="small">Builds windows, queries imagery, downloads and
-                                                    materializes Sentinel data into <code>windows/&lt;city_key&gt;</code>.
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex gap-3">
-                                            <div class="d-flex flex-column align-items-center">
-                                                <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center text-light small fw-bold"
-                                                    style="width: 24px; height: 24px;">2</div>
-                                                <div class="h-100 border-start border-secondary my-1"></div>
-                                            </div>
-                                            <div class="pb-3 w-100">
-                                                <h6 class="text-body-emphasis fw-bold mb-1">Inference (GPU)</h6>
-                                                <code
-                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">python3 run_prediction.py &lt;city_key&gt;</code>
-                                                <div class="small">Runs OlmoEarth to generate embeddings (GPU is used
-                                                    automatically if available).</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex gap-3">
-                                            <div class="d-flex flex-column align-items-center">
-                                                <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center text-light small fw-bold"
-                                                    style="width: 24px; height: 24px;">3</div>
-                                                <div class="h-100 border-start border-secondary my-1"></div>
-                                            </div>
-                                            <div class="w-100">
-                                                <h6 class="text-body-emphasis fw-bold mb-1">Metric Analysis</h6>
-                                                <code
-                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">python3 analyze_city.py &lt;city_key&gt;</code>
-                                                <div class="small">Aggregates embeddings into ward metrics and writes a
-                                                    detailed JSON report.</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex gap-3">
-                                            <div class="d-flex flex-column align-items-center">
-                                                <div class="rounded-circle bg-dark border border-secondary d-flex align-items-center justify-content-center text-light small fw-bold"
-                                                    style="width: 24px; height: 24px;">4</div>
-                                            </div>
-                                            <div class="w-100">
-                                                <h6 class="text-body-emphasis fw-bold mb-1">Visualization</h6>
-                                                <code
-                                                    class="d-block bg-dark p-2 rounded border border-secondary text-warning mb-2 small w-100">python3 generate_visualization.py &lt;city_key&gt;</code>
-                                                <div class="small">Outputs <code>public_html/&lt;city_key&gt;.html</code>
-                                                    for the interactive map.</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 small text-muted">
-                                        Tip: run everything in one go with <code>python3 process_all_cities.py
-                                            &lt;city_key&gt;</code> and check progress with
-                                        <code>./check_status.sh</code>.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Step 4: Quick Troubleshooting -->
-                        <div class="accordion-item bg-body-tertiary border border-secondary mb-3 rounded overflow-hidden">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button bg-body-tertiary text-body shadow-none collapsed py-3"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-danger bg-opacity-25 p-2 rounded text-danger">
-                                            <i class="bi bi-life-preserver fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold fs-5">4. Quick Troubleshooting</div>
-                                            <div class="small text-body-secondary">Fix common blockers fast</div>
-                                        </div>
-                                    </div>
-                                </button>
-                            </h2>
-                            <div id="collapseFour" class="accordion-collapse collapse"
-                                data-bs-parent="#replicationAccordion">
-                                <div class="accordion-body text-secondary pt-0">
-                                    <hr class="border-secondary mb-4">
-                                    <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
-                                        <li><span class="text-body-emphasis">GeoJSON not found</span> → verify
-                                            <code>geojson_file</code> path in <code>cities_config.json</code>.
-                                        </li>
-                                        <li><span class="text-body-emphasis">No embeddings detected</span> → confirm
-                                            <code>windows/&lt;city_key&gt;/windows/2019</code> and <code>2024</code>
-                                            exist and that <code>run_prediction.py</code> completed.</li>
-                                        <li><span class="text-body-emphasis">Slow downloads</span> → reduce workers in
-                                            <code>prepare_city.sh</code> or run overnight.</li>
-                                        <li><span class="text-body-emphasis">CPU-only machine</span> → inference still
-                                            works but takes much longer.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div id="viewer-container" class="d-none">
+        <div id="viewer-header">
+            <h5 class="m-0 text-light" id="viewer-title">City Analysis</h5>
+            <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-2" onclick="closeViewer()"><i
+                    class="bi bi-x-lg"></i>Close
+            </button>
         </div>
-        <div id="viewer-container" class="d-none">
-            <div id="viewer-header">
-                <h5 class="m-0 text-light" id="viewer-title">City Analysis</h5>
-                <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-2" onclick="closeViewer()"><i
-                        class="bi bi-x-lg"></i>Close
-                </button>
-            </div>
-            <div id="viewer-section">
-                <div id="loading-overlay" class="d-none">
-                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
-                    <div class="mt-3 text-light">Loading Visualization...</div>
-                </div><iframe id="viewer-frame" src=""></iframe>
-            </div>
+        <div id="viewer-section">
+            <div id="loading-overlay" class="d-none">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+                <div class="mt-3 text-light">Loading Visualization...</div>
+            </div><iframe id="viewer-frame" src=""></iframe>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script> // Theme Toggling Logic
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script> // Theme Toggling Logic
 
-            (() => {
-                'use strict'
+        (() => {
+            'use strict'
 
-                const getStoredTheme = () => localStorage.getItem('theme')
-                const setStoredTheme = theme => localStorage.setItem('theme', theme)
-                const getPreferredTheme = () => {
-                    const storedTheme = getStoredTheme()
-                    if (storedTheme) {
-                        return storedTheme
-                    }
-
-                    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+            const getStoredTheme = () => localStorage.getItem('theme')
+            const setStoredTheme = theme => localStorage.setItem('theme', theme)
+            const getPreferredTheme = () => {
+                const storedTheme = getStoredTheme()
+                if (storedTheme) {
+                    return storedTheme
                 }
 
-                const setTheme = theme => {
-                    if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                        document.documentElement.setAttribute('data-bs-theme', 'dark')
-                    }
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+            }
 
-                    else {
-                        document.documentElement.setAttribute('data-bs-theme', theme)
-                    }
+            const setTheme = theme => {
+                if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-bs-theme', 'dark')
                 }
 
-                setTheme(getPreferredTheme())
-
-                const showActiveTheme = (theme, focus = false) => {
-                    const themeSwitcher = document.querySelector('.dark-theme-toggle')
-                    if (!themeSwitcher) return
-                    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
-                    document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
-                        element.classList.remove('active')
-                        element.setAttribute('aria-pressed', 'false')
-                    })
-                    btnToActive.classList.add('active')
-                    btnToActive.setAttribute('aria-pressed', 'true')
-                    // Update icon
-                    const iconClass = theme === 'dark' ? 'bi-moon-stars-fill' : (theme === 'auto' ? 'bi-circle-half' : 'bi-sun-fill');
-                    themeSwitcher.innerHTML = `<i class="${iconClass}"></i><span class="d-lg-none ms-2">Toggle theme</span>`;
+                else {
+                    document.documentElement.setAttribute('data-bs-theme', theme)
                 }
+            }
 
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                    const storedTheme = getStoredTheme()
-                    if (storedTheme !== 'light' && storedTheme !== 'dark') {
-                        setTheme(getPreferredTheme())
-                    }
+            setTheme(getPreferredTheme())
+
+            const showActiveTheme = (theme, focus = false) => {
+                const themeSwitcher = document.querySelector('.dark-theme-toggle')
+                if (!themeSwitcher) return
+                const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+                document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+                    element.classList.remove('active')
+                    element.setAttribute('aria-pressed', 'false')
                 })
+                btnToActive.classList.add('active')
+                btnToActive.setAttribute('aria-pressed', 'true')
+                // Update icon
+                const iconClass = theme === 'dark' ? 'bi-moon-stars-fill' : (theme === 'auto' ? 'bi-circle-half' : 'bi-sun-fill');
+                themeSwitcher.innerHTML = `<i class="${iconClass}"></i><span class="d-lg-none ms-2">Toggle theme</span>`;
+            }
 
-                window.addEventListener('DOMContentLoaded', () => {
-                    showActiveTheme(getPreferredTheme())
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                const storedTheme = getStoredTheme()
+                if (storedTheme !== 'light' && storedTheme !== 'dark') {
+                    setTheme(getPreferredTheme())
+                }
+            })
 
-                    document.querySelectorAll('[data-bs-theme-value]').forEach(toggle => {
-                        toggle.addEventListener('click', () => {
-                            const theme = toggle.getAttribute('data-bs-theme-value')
-                            setStoredTheme(theme)
-                            setTheme(theme)
-                            showActiveTheme(theme, true)
-                        })
+            window.addEventListener('DOMContentLoaded', () => {
+                showActiveTheme(getPreferredTheme())
+
+                document.querySelectorAll('[data-bs-theme-value]').forEach(toggle => {
+                    toggle.addEventListener('click', () => {
+                        const theme = toggle.getAttribute('data-bs-theme-value')
+                        setStoredTheme(theme)
+                        setTheme(theme)
+                        showActiveTheme(theme, true)
                     })
                 })
-            })() // Dashboard Logic
+            })
+        })() // Dashboard Logic
 
-            const cities = {
-                bangalore: { url: 'bangalore.html', name: 'Bangalore Analysis' },
-                chennai: { url: 'chennai.html', name: 'Chennai Analysis' },
-                delhi: { url: 'delhi.html', name: 'Delhi Analysis' },
-                paris: { url: 'paris.html', name: 'Paris Analysis' },
-                london: { url: 'london.html', name: 'London Analysis' },
-                singapore: { url: 'singapore.html', name: 'Singapore Analysis' }
+        const cities = {
+            bangalore: { url: 'bangalore.html', name: 'Bangalore Analysis' },
+            chennai: { url: 'chennai.html', name: 'Chennai Analysis' },
+            delhi: { url: 'delhi.html', name: 'Delhi Analysis' },
+            paris: { url: 'paris.html', name: 'Paris Analysis' },
+            london: { url: 'london.html', name: 'London Analysis' },
+            singapore: { url: 'singapore.html', name: 'Singapore Analysis' }
+        };
+
+        function loadCity(cityKey, cardElement) {
+            if (!cities[cityKey]) return;
+
+            // Update UI active state
+            document.querySelectorAll('.city-card').forEach(c => c.classList.remove('active'));
+            cardElement.classList.add('active');
+
+            const viewerContainer = document.getElementById('viewer-container');
+            const frame = document.getElementById('viewer-frame');
+            const loading = document.getElementById('loading-overlay');
+            const title = document.getElementById('viewer-title');
+
+            // Show viewer
+            viewerContainer.classList.remove('d-none');
+            loading.classList.remove('d-none');
+
+            // Update Title
+            title.innerHTML = `<i class="bi bi-geo-alt-fill text-primary me-2"></i>${cities[cityKey].name}`;
+
+            // Load content
+            frame.src = cities[cityKey].url;
+
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+
+            frame.onload = () => {
+                loading.classList.add('d-none');
             };
+        }
 
-            function loadCity(cityKey, cardElement) {
-                if (!cities[cityKey]) return;
+        function closeViewer() {
+            const viewerContainer = document.getElementById('viewer-container');
+            const frame = document.getElementById('viewer-frame');
 
-                // Update UI active state
-                document.querySelectorAll('.city-card').forEach(c => c.classList.remove('active'));
-                cardElement.classList.add('active');
+            viewerContainer.classList.add('d-none');
+            frame.src = ""; // Clear src to stop resource usage
 
-                const viewerContainer = document.getElementById('viewer-container');
-                const frame = document.getElementById('viewer-frame');
-                const loading = document.getElementById('loading-overlay');
-                const title = document.getElementById('viewer-title');
+            // Re-enable body scroll
+            document.body.style.overflow = 'auto';
 
-                // Show viewer
-                viewerContainer.classList.remove('d-none');
-                loading.classList.remove('d-none');
+            // Remove active classes
+            document.querySelectorAll('.city-card').forEach(c => c.classList.remove('active'));
+        }
 
-                // Update Title
-                title.innerHTML = `<i class="bi bi-geo-alt-fill text-primary me-2"></i>${cities[cityKey].name}`;
+        // Copy to Clipboard Function
+        function copyToClipboard(button) {
+            const codeBlock = button.parentElement.querySelector('pre, code');
+            const text = codeBlock.textContent;
 
-                // Load content
-                frame.src = cities[cityKey].url;
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="bi bi-check2"></i>Copied!';
+                button.classList.add('copied');
 
-                // Prevent body scroll
-                document.body.style.overflow = 'hidden';
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.innerHTML = '<i class="bi bi-x"></i>Failed';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="bi bi-clipboard"></i>Copy';
+                }, 2000);
+            });
+        }
 
-                frame.onload = () => {
-                    loading.classList.add('d-none');
-                };
-            }
-
-            function closeViewer() {
-                const viewerContainer = document.getElementById('viewer-container');
-                const frame = document.getElementById('viewer-frame');
-
-                viewerContainer.classList.add('d-none');
-                frame.src = ""; // Clear src to stop resource usage
-
-                // Re-enable body scroll
-                document.body.style.overflow = 'auto';
-
-                // Remove active classes
-                document.querySelectorAll('.city-card').forEach(c => c.classList.remove('active'));
-            }
-
-        </script>
+    </script>
 </body>
 
 </html>
