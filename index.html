@@ -57,13 +57,38 @@
         }
 
         .card-img-placeholder {
-            height: 140px;
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            height: 160px;
+            background: #1e293b;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #94a3b8;
-            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+
+        .card-img-placeholder img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .city-card:hover .card-img-placeholder img {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        .card-img-placeholder i {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         /* Viewer Section - Full Screen Overlay */
@@ -375,9 +400,13 @@
             <div id="cities-grid" class="mb-5">
                 <h3 class="h4 mb-4 border-bottom pb-2">Available Cities</h3>
                 <div class="row g-4">
+
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 city-card" onclick="loadCity('bangalore', this)">
-                            <div class="card-img-placeholder"><i class="bi bi-buildings"></i></div>
+                            <div class="card-img-placeholder">
+                                <img src="assets/maps/bangalore.png" alt="Bangalore Map Landscape">
+                                <i class="bi bi-buildings"></i>
+                            </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title mb-0">Bangalore</h5><span
@@ -393,7 +422,10 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 city-card" onclick="loadCity('chennai', this)">
-                            <div class="card-img-placeholder"><i class="bi bi-water"></i></div>
+                            <div class="card-img-placeholder">
+                                <img src="assets/maps/chennai.png" alt="Chennai Map Landscape">
+                                <i class="bi bi-water"></i>
+                            </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title mb-0">Chennai</h5><span
@@ -409,7 +441,10 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 city-card" onclick="loadCity('delhi', this)">
-                            <div class="card-img-placeholder"><i class="bi bi-geo-alt"></i></div>
+                            <div class="card-img-placeholder">
+                                <img src="assets/maps/delhi.png" alt="Delhi Map Landscape">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title mb-0">Delhi</h5><span
@@ -427,7 +462,10 @@
                     <!-- International Cities -->
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 city-card" onclick="loadCity('paris', this)">
-                            <div class="card-img-placeholder"><i class="bi bi-torii-gate"></i></div>
+                            <div class="card-img-placeholder">
+                                <img src="assets/maps/paris.png" alt="Paris Map Landscape">
+                                <i class="bi bi-torii-gate"></i>
+                            </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title mb-0">Paris</h5><span
@@ -444,7 +482,10 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 city-card" onclick="loadCity('london', this)">
-                            <div class="card-img-placeholder"><i class="bi bi-clock"></i></div>
+                            <div class="card-img-placeholder">
+                                <img src="assets/maps/london.png" alt="London Map Landscape">
+                                <i class="bi bi-clock"></i>
+                            </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title mb-0">London</h5><span
@@ -461,7 +502,10 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 city-card" onclick="loadCity('singapore', this)">
-                            <div class="card-img-placeholder"><i class="bi bi-building-fill"></i></div>
+                            <div class="card-img-placeholder">
+                                <img src="assets/maps/singapore.png" alt="Singapore Map Landscape">
+                                <i class="bi bi-building-fill"></i>
+                            </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title mb-0">Singapore</h5><span
@@ -597,149 +641,298 @@
             <!-- How to Replicate Section -->
             <div class="mb-5 fade-in-up" style="animation-delay: 0.4s;">
                 <h3 class="h4 mb-4 border-bottom pb-2">How to Replicate this Analysis</h3>
-                <div class="card border-0 bg-body-tertiary">
+                <div class="card border-0 bg-body-tertiary shadow-sm">
                     <div class="card-body p-4 replicate-content">
-                        <p class="lead text-secondary mb-5">
-                            This analysis uses the <a href="https://github.com/allenai/rslearn"
-                                class="text-primary fw-bold">rslearn</a> library
-                            to download satellite imagery and the <a
-                                href="https://github.com/allenai/olmoearth_pretrain"
-                                class="text-primary fw-bold">OlmoEarth</a>
-                            foundation model to generate semantic embeddings. Follow these steps to replicate for any
-                            city.
-                        </p>
-
-                        <!-- Step 1: Installation -->
-                        <div class="mb-5">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-download me-2 text-primary"></i>Step 1: Install
-                                rslearn</h5>
-                            <p class="text-secondary">Clone and install the rslearn library (requires Python 3.10+,
-                                Python 3.12 recommended):</p>
-                            <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
-                                <button class="copy-btn" onclick="copyToClipboard(this)">
-                                    <i class="bi bi-clipboard"></i>Copy
-                                </button>
-                                <code
-                                    class="d-block text-white mb-2">git clone https://github.com/allenai/rslearn.git</code>
-                                <code class="d-block text-white mb-2">cd rslearn</code>
-                                <code class="d-block text-white">pip install .[extra]</code>
+                        <div
+                            class="alert alert-danger mb-5 d-flex align-items-center gap-3 border-0 bg-danger bg-opacity-10 text-danger">
+                            <i class="bi bi-exclamation-triangle-fill fs-2"></i>
+                            <div>
+                                <h5 class="alert-heading fw-bold mb-1">Massive Data Requirement!</h5>
+                                <p class="mb-0">Please note that downloading high-resolution satellite imagery for both
+                                    2019 and 2024 for a full city can fetch <strong>~40GB or more</strong> of data.
+                                    Ensure you have sufficient disk space (50GB+ recommended) and a stable internet
+                                    connection.</p>
                             </div>
                         </div>
 
-                        <!-- Step 2: Dataset Config -->
+                        <p class="lead text-secondary mb-5">
+                            This procedure documents the exact workflow used to generate the Kanpur urban analysis. You
+                            can adapt these scripts for any other city by updating the GeoJSON and coordinates.
+                        </p>
+
+                        <!-- Project Structure Overview -->
                         <div class="mb-5">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-gear me-2 text-warning"></i>Step 2: Create Dataset
-                                Configuration</h5>
-                            <p class="text-secondary">Create a working directory and add <code>config.json</code> to
-                                define data sources:</p>
-                            <div class="code-block-wrapper bg-dark p-3 rounded border border-secondary shadow-sm">
-                                <button class="copy-btn" onclick="copyToClipboard(this)">
-                                    <i class="bi bi-clipboard"></i>Copy
-                                </button>
-                                <div class="d-flex justify-content-between border-bottom border-gray-700 pb-2 mb-2">
-                                    <span class="text-muted small">config.json</span>
+                            <h5 class="fw-bold mb-3"><i class="bi bi-folder-fill me-2 text-warning"></i>Project
+                                Structure Overview</h5>
+                            <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                <pre class="text-info-emphasis font-monospace small m-0"
+                                    style="line-height: 1.5;">rslearn/                      <span class="text-white-50"># Root repository</span>
+├── <span class="text-white">kanpur.geojson</span>            <span class="text-white-50"># Ward boundaries (Step 4)</span>
+├── <span class="text-white">create_windows.py</span>         <span class="text-white-50"># Windows generation script (Step 5)</span>
+├── <span class="text-white">model.yaml</span>                <span class="text-white-50"># Prediction configuration (Step 7)</span>
+├── <span class="text-white">analyze_kanpur.py</span>         <span class="text-white-50"># Final analysis script (Step 8)</span>
+├── <span class="text-white">dataset/</span>                  <span class="text-white-50"># Dataset directory (Step 3)</span>
+│   └── <span class="text-white">config.json</span>           <span class="text-white-50"># rslearn dataset config</span>
+└── <span class="text-white">analysis_results/</span>         <span class="text-white-50"># Generated metrics (created by analyze_kanpur.py)</span></pre>
+                            </div>
+                        </div>
+
+                        <!-- Step 1 & 2 -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-6">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-git me-2 text-primary"></i>1. Clone the
+                                    Repository</h5>
+                                <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <pre class="text-white m-0">git clone https://github.com/allenai/rslearn.git
+cd rslearn</pre>
                                 </div>
-                                <pre class="text-info font-monospace small m-0"
-                                    style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;">{
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-box-seam me-2 text-primary"></i>2. Install
+                                    Dependencies</h5>
+                                <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <pre class="text-white m-0">python3 -m venv venv
+source venv/bin/activate
+pip install .[extra]
+
+# Install OlmoEarth module
+pip install git+https://github.com/allenai/olmoearth.git</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 & 4 -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-6">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-folder2-open me-2 text-primary"></i>3. Setup
+                                    Dataset</h5>
+                                <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <pre class="text-white m-0">mkdir dataset</pre>
+                                </div>
+                                <div
+                                    class="mt-3 code-block-wrapper bg-dark p-3 rounded border border-secondary shadow-sm">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <div
+                                        class="d-flex justify-content-between border-bottom border-secondary pb-2 mb-2">
+                                        <span class="text-white-50 small">dataset/config.json</span>
+                                    </div>
+                                    <pre class="text-info font-monospace small m-0"
+                                        style="white-space: pre-wrap; max-height: 250px; overflow-y: auto;">{
   "layers": {
     "sentinel2_l2a": {
-      "band_sets": [{"bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B11", "B12"], "dtype": "uint16"}],
+      "band_sets": [{
+          "bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B8A", "B09", "B11", "B12"],
+          "dtype": "uint16"
+      }],
       "data_source": {
         "class_path": "rslearn.data_sources.planetary_computer.Sentinel2",
-        "init_args": {"cache_dir": "cache/planetary_computer", "harmonize": true, "sort_by": "eo:cloud_cover"},
+        "init_args": {
+          "cache_dir": "cache/planetary_computer",
+          "harmonize": true,
+          "sort_by": "eo:cloud_cover"
+        },
         "ingest": true,
-        "query_config": {"max_matches": 4, "period_duration": "30d", "space_mode": "PER_PERIOD_MOSAIC"}
+        "query_config": {
+          "max_matches": 12,
+          "period_duration": "30d",
+          "space_mode": "PER_PERIOD_MOSAIC"
+        }
       },
       "type": "raster"
     },
     "sentinel1": {
-      "band_sets": [{"bands": ["vv", "vh"], "dtype": "float32", "nodata_vals": [-32768, -32768]}],
+      "band_sets": [{
+          "bands": ["vv", "vh"],
+          "dtype": "float32",
+          "nodata_vals": [-32768, -32768]
+      }],
       "data_source": {
         "class_path": "rslearn.data_sources.planetary_computer.Sentinel1",
-        "init_args": {"cache_dir": "cache/planetary_computer", "query": {"sar:instrument_mode": {"eq": "IW"}, "sar:polarizations": {"eq": ["VV", "VH"]}}},
+        "init_args": {
+          "cache_dir": "cache/planetary_computer",
+          "query": {
+            "sar:instrument_mode": {"eq": "IW"},
+            "sar:polarizations": {"eq": ["VV", "VH"]}
+          }
+        },
         "ingest": true,
-        "query_config": {"max_matches": 4, "period_duration": "30d", "space_mode": "PER_PERIOD_MOSAIC"}
+        "query_config": {
+          "max_matches": 12,
+          "period_duration": "30d",
+          "space_mode": "PER_PERIOD_MOSAIC"
+        }
       },
       "type": "raster"
     },
     "embeddings": {
-      "band_sets": [{"dtype": "float32", "num_bands": 768}],
+      "band_sets": [{
+          "dtype": "float32",
+          "num_bands": 768
+      }],
       "type": "raster"
     }
   }
 }</pre>
-                            </div>
-                        </div>
-
-                        <!-- Step 3: Create Windows -->
-                        <div class="mb-5">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-grid-3x3 me-2 text-success"></i>Step 3: Define
-                                Spatiotemporal Windows</h5>
-                            <p class="text-secondary">Create windows (spatial grids) for your city. Replace coordinates
-                                with your city's bounding box:</p>
-                            <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
-                                <button class="copy-btn" onclick="copyToClipboard(this)">
-                                    <i class="bi bi-clipboard"></i>Copy
-                                </button>
-                                <code class="d-block text-success mb-2"># For 2019 baseline</code>
-                                <code
-                                    class="d-block text-white mb-3">rslearn dataset add_windows --root ./dataset --group 2019 --name default --utm --resolution 10 --src_crs EPSG:4326 --box=77.4,12.8,77.8,13.2 --start 2018-01-01T00:00:00+00:00 --end 2020-01-01T00:00:00+00:00 --grid_size 1024</code>
-
-                                <code class="d-block text-success mb-2"># For 2024 current</code>
-                                <code
-                                    class="d-block text-white">rslearn dataset add_windows --root ./dataset --group 2024 --name default --utm --resolution 10 --src_crs EPSG:4326 --box=77.4,12.8,77.8,13.2 --start 2023-01-01T00:00:00+00:00 --end 2025-01-01T00:00:00+00:00 --grid_size 1024</code>
-                            </div>
-                        </div>
-
-                        <!-- Step 4: Download Imagery -->
-                        <div class="mb-5">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-cloud-download me-2 text-info"></i>Step 4: Download
-                                Satellite Imagery</h5>
-                            <p class="text-secondary">Query, download, and process satellite images from Planetary
-                                Computer:</p>
-                            <div class="d-flex flex-column gap-3">
-                                <div class="code-block-wrapper p-3 rounded bg-dark border border-secondary">
-                                    <button class="copy-btn" onclick="copyToClipboard(this)">
-                                        <i class="bi bi-clipboard"></i>Copy
-                                    </button>
-                                    <div class="fw-bold text-white mb-2">Prepare (Query Available Imagery)</div>
-                                    <code
-                                        class="d-block text-warning small">rslearn dataset prepare --root ./dataset --workers 32 --disabled-layers landsat --retry-max-attempts 5 --retry-backoff-seconds 5</code>
                                 </div>
-                                <div class="code-block-wrapper p-3 rounded bg-dark border border-secondary">
-                                    <button class="copy-btn" onclick="copyToClipboard(this)">
-                                        <i class="bi bi-clipboard"></i>Copy
-                                    </button>
-                                    <div class="fw-bold text-white mb-2">Ingest (Download)</div>
-                                    <code
-                                        class="d-block text-warning small">rslearn dataset ingest --root ./dataset --workers 16 --disabled-layers landsat --retry-max-attempts 5 --retry-backoff-seconds 5</code>
-                                </div>
-                                <div class="code-block-wrapper p-3 rounded bg-dark border border-secondary">
-                                    <button class="copy-btn" onclick="copyToClipboard(this)">
-                                        <i class="bi bi-clipboard"></i>Copy
-                                    </button>
-                                    <div class="fw-bold text-white mb-2">Materialize (Crop/Mosaic to Windows)</div>
-                                    <code
-                                        class="d-block text-warning small">rslearn dataset materialize --root ./dataset --workers 32 --no-use-initial-job --disabled-layers landsat --retry-max-attempts 5 --retry-backoff-seconds 5</code>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt me-2 text-primary"></i>4. Prepare
+                                    GeoJSON</h5>
+                                <p class="text-secondary">Place your ward boundary file (e.g.,
+                                    <code>kanpur.geojson</code>) in the root directory.
+                                </p>
+                                <div
+                                    class="feature-item p-3 rounded bg-body-secondary border d-flex gap-3 align-items-start mt-4">
+                                    <i class="bi bi-info-circle-fill text-primary"></i>
+                                    <div class="small">Ensure the GeoJSON coordinates are in <strong>EPSG:4326</strong>
+                                        (WGS84 Lat/Lon).</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Step 5: Model Config -->
+                        <!-- Step 5 -->
                         <div class="mb-5">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-cpu me-2 text-danger"></i>Step 5: Create Model
-                                Configuration</h5>
-                            <p class="text-secondary">Create <code>model.yaml</code> to configure OlmoEarth inference:
-                            </p>
+                            <h5 class="fw-bold mb-3"><i class="bi bi-window-split me-2 text-primary"></i>5. Generate
+                                Analysis Windows</h5>
+                            <p class="text-secondary">Create <code>create_windows.py</code> in the root to define the
+                                spatial patches for years 2019 and 2024.</p>
                             <div class="code-block-wrapper bg-dark p-3 rounded border border-secondary shadow-sm">
                                 <button class="copy-btn" onclick="copyToClipboard(this)">
                                     <i class="bi bi-clipboard"></i>Copy
                                 </button>
-                                <div class="d-flex justify-content-between border-bottom border-gray-700 pb-2 mb-2">
-                                    <span class="text-muted small">model.yaml</span>
+                                <div class="d-flex justify-content-between border-bottom border-secondary pb-2 mb-2">
+                                    <span class="text-white-50 small">create_windows.py</span>
                                 </div>
                                 <pre class="text-info font-monospace small m-0"
-                                    style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;">model:
+                                    style="white-space: pre-wrap; max-height: 400px; overflow-y: auto;">import json
+import shapely.geometry
+import subprocess
+import sys
+
+# --- CONFIGURATION ---
+geojson_path = "kanpur.geojson"
+dataset_path = "dataset"
+
+# Define your years
+time_ranges = [
+    ("2019-01-01T00:00:00+00:00", "2019-02-01T00:00:00+00:00", "2019"),
+    ("2024-01-01T00:00:00+00:00", "2024-02-01T00:00:00+00:00", "2024")
+]
+
+# Load GeoJSON
+try:
+    with open(geojson_path, 'r') as f:
+        data = json.load(f)
+except FileNotFoundError:
+    print(f"ERROR: Could not find file '{geojson_path}'")
+    sys.exit(1)
+
+# AUTO-DETECT CRS
+first_geom = shapely.geometry.shape(data['features'][0]['geometry'])
+min_x, min_y, max_x, max_y = first_geom.bounds
+
+if -180 <= min_x <= 180 and -90 <= min_y <= 90:
+    input_crs = "EPSG:4326"
+else:
+    input_crs = "EPSG:3857"
+
+print(f"Processing {len(data['features'])} features...\n")
+
+for i, feature in enumerate(data['features']):
+    geom = shapely.geometry.shape(feature['geometry'])
+    bounds = geom.bounds 
+    
+    if input_crs == "EPSG:4326" and bounds[1] > 90: 
+         box_str = f"{bounds[1]},{bounds[0]},{bounds[3]},{bounds[2]}"
+    else:
+         box_str = f"{bounds[0]},{bounds[1]},{bounds[2]},{bounds[3]}"
+
+    for start, end, suffix in time_ranges:
+        window_name = f"region_{i}_{suffix}"
+        
+        cmd = [
+            "rslearn", "dataset", "add_windows",
+            "--root", dataset_path,
+            "--group", "default",
+            "--name", window_name,
+            "--box", box_str,
+            "--start", start,
+            "--end", end,
+            "--src_crs", input_crs,
+            "--utm",
+            "--resolution", "10"
+        ]
+        subprocess.run(cmd, check=True, capture_output=True)
+        print(".", end="", flush=True)
+
+print("\nDone! Windows created.")</pre>
+                            </div>
+                            <div class="mt-3 code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <pre class="text-white m-0">python create_windows.py</pre>
+                            </div>
+                        </div>
+
+                        <!-- Step 6 -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-cloud-arrow-down-fill me-2 text-primary"></i>6.
+                                Download Satellite Imagery</h5>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="code-block-wrapper p-4 rounded bg-dark border border-secondary h-100">
+                                        <button class="copy-btn" onclick="copyToClipboard(this)">
+                                            <i class="bi bi-clipboard"></i>Copy
+                                        </button>
+                                        <div class="fw-bold text-white mb-2">I. Prepare (Query)</div>
+                                        <p class="small text-muted mb-2">Searches for available scenes matching your
+                                            dates.</p>
+                                        <pre
+                                            class="text-warning small m-0">rslearn dataset prepare --root dataset --workers 4</pre>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="code-block-wrapper p-4 rounded bg-dark border border-secondary h-100">
+                                        <button class="copy-btn" onclick="copyToClipboard(this)">
+                                            <i class="bi bi-clipboard"></i>Copy
+                                        </button>
+                                        <div class="fw-bold text-white mb-2">II. Ingest (Download)</div>
+                                        <p class="small text-muted mb-2">Downloads individual tiles to local storage.
+                                        </p>
+                                        <pre
+                                            class="text-warning small m-0">rslearn dataset ingest --root dataset --workers 4 --no-use-initial-job</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 7 -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-lightning-fill me-2 text-primary"></i>7. Generate
+                                OlmoEarth Embeddings</h5>
+                            <p class="text-secondary">Create <code>model.yaml</code> in the root to configure the
+                                prediction head:</p>
+                            <div class="code-block-wrapper bg-dark p-3 rounded border border-secondary shadow-sm mb-3">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <div class="d-flex justify-content-between border-bottom border-secondary pb-2 mb-2">
+                                    <span class="text-white-50 small">model.yaml</span>
+                                </div>
+                                <pre class="text-info font-monospace small m-0"
+                                    style="white-space: pre-wrap; max-height: 400px; overflow-y: auto;">model:
   class_path: rslearn.train.lightning_module.RslearnLightningModule
   init_args:
     model:
@@ -757,26 +950,26 @@
 data:
   class_path: rslearn.train.data_module.RslearnDataModule
   init_args:
-    path: ./dataset
+    path: ${DATASET_PATH}
     inputs:
       sentinel2_l2a:
         data_type: "raster"
-        layers: ["sentinel2_l2a", "sentinel2_l2a.1", "sentinel2_l2a.2", "sentinel2_l2a.3"]
+        layers: ["sentinel2_l2a"]
         bands: ["B02", "B03", "B04", "B08", "B05", "B06", "B07", "B8A", "B11", "B12", "B01", "B09"]
         passthrough: true
         dtype: FLOAT32
         load_all_layers: true
       sentinel1:
         data_type: "raster"
-        layers: ["sentinel1", "sentinel1.1", "sentinel1.2", "sentinel1.3"]
+        layers: ["sentinel1"]
         bands: ["vv", "vh"]
         passthrough: true
         dtype: FLOAT32
         load_all_layers: true
     task:
       class_path: rslearn.train.tasks.embedding.EmbeddingTask
-    batch_size: 8
-    num_workers: 32
+    batch_size: 1
+    num_workers: 4
     predict_config:
       transforms:
         - class_path: rslearn.models.olmoearth_pretrain.norm.OlmoEarthNormalize
@@ -791,7 +984,7 @@ trainer:
   callbacks:
     - class_path: rslearn.train.prediction_writer.RslearnWriter
       init_args:
-        path: placeholder
+        path: ${DATASET_PATH}
         output_layer: embeddings
         merger:
           class_path: rslearn.train.prediction_writer.RasterMerger
@@ -799,44 +992,139 @@ trainer:
             padding: 4
             downsample_factor: 4</pre>
                             </div>
-                        </div>
-
-                        <!-- Step 6: Generate Embeddings -->
-                        <div class="mb-5">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge me-2 text-warning"></i>Step 6:
-                                Generate Embeddings</h5>
-                            <p class="text-secondary">Run the OlmoEarth model to compute 768-dimensional embeddings:</p>
                             <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
                                 <button class="copy-btn" onclick="copyToClipboard(this)">
                                     <i class="bi bi-clipboard"></i>Copy
                                 </button>
-                                <code class="d-block text-white">rslearn model predict --config model.yaml</code>
-                            </div>
-                            <div class="alert alert-info mt-3 py-2 small d-flex align-items-center gap-2">
-                                <i class="bi bi-info-circle-fill"></i>
-                                <div>GPU is recommended but not required. The model will automatically use GPU if
-                                    available.</div>
+                                <pre class="text-white m-0">export DATASET_PATH=dataset
+python -m rslearn.main model predict --config model.yaml</pre>
                             </div>
                         </div>
 
-                        <!-- Step 7: Analysis -->
+                        <!-- Step 8 -->
                         <div class="mb-5">
-                            <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart me-2 text-primary"></i>Step 7: Analyze
-                                Ward-Level Changes</h5>
-                            <p class="text-secondary">Create custom Python scripts to:</p>
-                            <ul class="text-secondary">
-                                <li>Load your city's ward boundaries (GeoJSON in <strong>EPSG:4326</strong>)</li>
-                                <li>Extract embeddings from rslearn dataset windows</li>
-                                <li>Aggregate embeddings within ward boundaries</li>
-                                <li>Calculate change metrics (2019 vs 2024)</li>
-                                <li>Generate visualization HTML</li>
-                            </ul>
-                            <div class="alert alert-warning py-2 small d-flex align-items-center gap-2">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
-                                <div>The analysis scripts are custom and specific to your ward structure. See the <a
-                                        href="https://github.com/allenai/rslearn/blob/master/docs/examples/OlmoEarthEmbeddings.md"
-                                        class="text-decoration-underline" target="_blank">rslearn documentation</a> for
-                                    guidance.</div>
+                            <h5 class="fw-bold mb-3"><i class="bi bi-graph-up-arrow me-2 text-primary"></i>8. Compute
+                                Urban Metrics</h5>
+                            <p class="text-secondary">Run the final analysis script to extract metrics from the
+                                embeddings:</p>
+                            <div class="code-block-wrapper bg-dark p-3 rounded border border-secondary shadow-sm mb-3">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <div class="d-flex justify-content-between border-bottom border-secondary pb-2 mb-2">
+                                    <span class="text-white-50 small">analyze_kanpur.py</span>
+                                </div>
+                                <pre class="text-info font-monospace small m-0"
+                                    style="white-space: pre-wrap; max-height: 400px; overflow-y: auto;">"""Analyze OlmoEarth embeddings for Kanpur to compute urban metrics with global scaling and ward mapping."""
+
+import json
+import numpy as np
+import rasterio
+from pathlib import Path
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import tqdm
+
+# Configuration
+DATASET_PATH = Path("dataset")
+WINDOWS_PATH = DATASET_PATH / "windows" / "default"
+GEOJSON_PATH = Path("kanpur.geojson")
+OUTPUT_PATH = Path("analysis_results")
+OUTPUT_PATH.mkdir(exist_ok=True)
+
+def get_ward_mapping():
+    try:
+        with open(GEOJSON_PATH, 'r') as f:
+            data = json.load(f)
+        mapping = {}
+        for i, feature in enumerate(data['features']):
+            ward_name = feature['properties'].get('Ward Name', f"Region {i}")
+            mapping[i] = ward_name
+        return mapping
+    except Exception as e:
+        print(f"Warning: {e}")
+        return {}
+
+def load_embedding(window_path):
+    embedding_dir = window_path / "layers" / "embeddings"
+    if not embedding_dir.exists(): return None
+    subdirs = [d for d in embedding_dir.iterdir() if d.is_dir() and d.name != 'completed']
+    if not subdirs: return None
+    geotiff_path = subdirs[0] / "geotiff.tif"
+    try:
+        with rasterio.open(geotiff_path) as src:
+            return src.read()
+    except: return None
+
+def fit_global_model(windows_path):
+    all_pixels = []
+    windows = [w for w in windows_path.iterdir() if w.is_dir()]
+    sample_windows = np.random.choice(windows, min(len(windows), 20), replace=False)
+    for window_path in tqdm.tqdm(sample_windows, desc="Sampling embeddings"):
+        embedding = load_embedding(window_path)
+        if embedding is not None:
+            C, H, W = embedding.shape
+            pixels = embedding.reshape(C, -1).T
+            idx = np.random.choice(pixels.shape[0], min(pixels.shape[0], 500), replace=False)
+            all_pixels.append(pixels[idx])
+    X = np.vstack(all_pixels)
+    scaler = StandardScaler().fit(X)
+    X_scaled = scaler.transform(X)
+    pca = PCA(n_components=4).fit(X_scaled)
+    return scaler, pca
+
+def main():
+    ward_mapping = get_ward_mapping()
+    scaler, pca = fit_global_model(WINDOWS_PATH)
+    windows = sorted([w for w in WINDOWS_PATH.iterdir() if w.is_dir()])
+    results = {}
+    for window_path in tqdm.tqdm(windows, desc="Analyzing"):
+        window_name = window_path.name
+        idx = int(window_name.split('_')[1])
+        ward_name = ward_mapping.get(idx, window_name)
+        embedding = load_embedding(window_path)
+        if embedding is None: continue
+        C, H, W = embedding.shape
+        pixels = embedding.reshape(C, -1).T
+        components = pca.transform(scaler.transform(pixels)).T.reshape(4, H, W)
+        results[window_name] = {
+            'ward_name': ward_name,
+            'metrics': {
+                'vegetation_mean': float(np.mean(components[0])),
+                'urban_density_mean': float(np.mean(components[1])),
+            }
+        }
+    
+    # Compute changes
+    changes = {}
+    regions = {}
+    for window_name, data in results.items():
+        parts = window_name.split('_')
+        region_id, year = parts[1], parts[2]
+        if region_id not in regions: regions[region_id] = {}
+        regions[region_id][year] = data
+    
+    for rid, years_data in regions.items():
+        if '2019' in years_data and '2024' in years_data:
+            ward_name = years_data['2019']['ward_name']
+            d19, d24 = years_data['2019']['metrics'], years_data['2024']['metrics']
+            changes[ward_name] = {
+                'vegetation_change': d24['vegetation_mean'] - d19['vegetation_mean'],
+                'urban_density_change': d24['urban_density_mean'] - d19['urban_density_mean']
+            }
+    
+    with open(OUTPUT_PATH / "temporal_changes.json", 'w') as f:
+        json.dump(changes, f, indent=2)
+    print("\n✓ Analysis complete.")
+
+if __name__ == "__main__":
+    main()</pre>
+                            </div>
+                            <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
+                                <button class="copy-btn" onclick="copyToClipboard(this)">
+                                    <i class="bi bi-clipboard"></i>Copy
+                                </button>
+                                <pre class="text-white m-0">python analyze_kanpur.py</pre>
                             </div>
                         </div>
 
@@ -852,31 +1140,6 @@ trainer:
                                             models</small>
                                     </div>
                                 </a>
-                                <a href="https://github.com/allenai/rslearn/blob/master/docs/examples/OlmoEarthEmbeddings.md"
-                                    class="resource-link" target="_blank">
-                                    <i class="bi bi-file-earmark-text"></i>
-                                    <div>
-                                        <div class="fw-semibold">OlmoEarth Embeddings Tutorial</div>
-                                        <small class="text-muted">Step-by-step guide for computing embeddings</small>
-                                    </div>
-                                </a>
-                                <a href="https://github.com/allenai/olmoearth_pretrain" class="resource-link"
-                                    target="_blank">
-                                    <i class="bi bi-cpu"></i>
-                                    <div>
-                                        <div class="fw-semibold">OlmoEarth Model Repository</div>
-                                        <small class="text-muted">Foundation model for Earth observation</small>
-                                    </div>
-                                </a>
-                                <a href="https://planetarycomputer.microsoft.com/" class="resource-link"
-                                    target="_blank">
-                                    <i class="bi bi-cloud-download"></i>
-                                    <div>
-                                        <div class="fw-semibold">Microsoft Planetary Computer</div>
-                                        <small class="text-muted">Satellite imagery data source (Sentinel-1 &
-                                            Sentinel-2)</small>
-                                    </div>
-                                </a>
                             </div>
                         </div>
 
@@ -884,6 +1147,7 @@ trainer:
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <div id="viewer-container" class="d-none">
         <div id="viewer-header">
@@ -1017,10 +1281,11 @@ trainer:
             document.querySelectorAll('.city-card').forEach(c => c.classList.remove('active'));
         }
 
-        // Copy to Clipboard Function
+        // Copy to Clipboard Function - Fixed to support multi-line pre/code
         function copyToClipboard(button) {
             const codeBlock = button.parentElement.querySelector('pre, code');
-            const text = codeBlock.textContent;
+            // Get all text and remove extra leading/trailing whitespace
+            const text = codeBlock.innerText.trim();
 
             navigator.clipboard.writeText(text).then(() => {
                 // Visual feedback
