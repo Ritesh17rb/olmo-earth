@@ -381,27 +381,57 @@
             </div>
             
             <div class="control-section">
+
+            
                 <div class="section-title">Analysis Metrics</div>
+
+            
                 <div class="metric-selector">
+
                     <button class="metric-btn" data-metric="vegetation_index">
                         🌿 Vegetation Index
                     </button>
+
                     <button class="metric-btn" data-metric="urban_density">
                         🏢 Urban Density
                     </button>
+
                     <button class="metric-btn" data-metric="feature_diversity">
                         🎨 Feature Diversity
                     </button>
+
+            
+                </div>
+
+            
+            </div>
+
+
+            
+            <div class="control-section">
+
+            
+                <div class="section-title">Change Metrics</div>
+
+            
+                <div class="metric-selector">
+
                     <button class="metric-btn" data-metric="vegetation_change_percent">
                         🌳 Vegetation Change (%)
                     </button>
+
                     <button class="metric-btn" data-metric="urban_density_change_percent">
                         🏙️ Urban Density Change (%)
                     </button>
+
                     <button class="metric-btn" data-metric="diversity_change_percent">
                         📈 Diversity Change (%)
                     </button>
+
+            
                 </div>
+
+            
             </div>
             
             <div class="control-section">
@@ -63788,7 +63818,7 @@
         let labelsLayer = null;
         let currentOpacity = 0.7;
         
-        // Color scales with relative breaks
+        // Color scales with absolute breaks
         const colorScales = {
             'data_availability': {
                 colors: ['#dc2626', '#fbbf24', '#22c55e'],
@@ -63798,42 +63828,37 @@
                 labels: ['No Data', 'Partial (1 year)', 'Complete (2 years)']
             },
             'vegetation_change_percent': {
-                colors: ['#dc2626', '#f59e0b', '#fbbf24', '#a3e635', '#22c55e'],
-                breaks: relativeBreaks.vegetation_change_percent,
-                label: 'Vegetation Change (%)',
-                isRelative: true
+                colors: ['#dc2626', '#f59e0b', '#94a3b8', '#a3e635', '#22c55e'],
+                breaks: [-5, -2, -0.5, 0.5, 2],
+                label: 'Vegetation Change (%)'
             },
             'urban_density_change_percent': {
-                colors: ['#22c55e', '#a3e635', '#fbbf24', '#f59e0b', '#dc2626'],
-                breaks: relativeBreaks.urban_density_change_percent,
-                label: 'Urban Density Change (%)',
-                isRelative: true
+                colors: ['#22c55e', '#a3e635', '#94a3b8', '#f59e0b', '#dc2626'],
+                breaks: [-5, -2, -0.5, 0.5, 2],
+                label: 'Urban Density Change (%)'
             },
             'diversity_change_percent': {
-                colors: ['#dc2626', '#f59e0b', '#fbbf24', '#a3e635', '#22c55e'],
-                breaks: relativeBreaks.diversity_change_percent,
-                label: 'Diversity Change (%)',
-                isRelative: true
+                colors: ['#dc2626', '#f59e0b', '#94a3b8', '#a3e635', '#22c55e'],
+                breaks: [-5, -2, -0.5, 0.5, 2],
+                label: 'Diversity Change (%)'
             },
             'vegetation_index': {
-                colors: ['#7f1d1d', '#dc2626', '#f59e0b', '#a3e635', '#22c55e'],
-                breaks: relativeBreaks.vegetation_index,
-                label: 'Vegetation Index',
-                isRelative: true
+                colors: ['#dc2626', '#f59e0b', '#fbbf24', '#a3e635', '#22c55e'],
+                breaks: [0, 0.2, 0.4, 0.6, 0.8],
+                label: 'Vegetation Index'
             },
             'urban_density': {
-                colors: ['#1e3a8a', '#3b82f6', '#60a5fa', '#f59e0b', '#dc2626'],
-                breaks: relativeBreaks.urban_density,
-                label: 'Urban Density',
-                isRelative: true
+                colors: ['#22c55e', '#a3e635', '#fbbf24', '#f59e0b', '#dc2626'],
+                breaks: [0, 0.2, 0.4, 0.6, 0.8],
+                label: 'Urban Density'
             },
             'feature_diversity': {
-                colors: ['#1e3a8a', '#3b82f6', '#60a5fa', '#f59e0b', '#dc2626'],
-                breaks: relativeBreaks.feature_diversity,
-                label: 'Feature Diversity',
-                isRelative: true
+                colors: ['#dc2626', '#f59e0b', '#fbbf24', '#a3e635', '#22c55e'],
+                breaks: [0, 5, 8, 11, 14],
+                label: 'Feature Diversity'
             }
         };
+
         
         function getColor(value, metric) {
             const scale = colorScales[metric];
@@ -63989,9 +64014,10 @@
                 if (properties.change_metrics) {
                     html += `<div style="margin-top: 12px; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase;">Change Overview (2019-2024)</div>`;
                     
-                    const formatChange = (val) => {
+                    const formatChange = (val, invert) => {
                         const num = parseFloat(val);
-                        const color = num > 0 ? '#22c55e' : (num < 0 ? '#ef4444' : '#94a3b8');
+                        const direction = invert ? -num : num;
+                        const color = direction > 0 ? '#22c55e' : (direction < 0 ? '#ef4444' : '#94a3b8');
                         const sign = num > 0 ? '+' : '';
                         return `<span style="color: ${color}; font-weight: 600;">${sign}${num.toFixed(1)}%</span>`;
                     };
@@ -63999,15 +64025,15 @@
                     html += `
                         <div class="info-metric">
                             <span class="info-label">Vegetation:</span>
-                            <span class="info-value">${formatChange(properties.change_metrics.vegetation_change_percent)}</span>
+                            <span class="info-value">${formatChange(properties.change_metrics.vegetation_change_percent, false)}</span>
                         </div>
                         <div class="info-metric">
                             <span class="info-label">Urban Density:</span>
-                            <span class="info-value">${formatChange(properties.change_metrics.urban_density_change_percent)}</span>
+                            <span class="info-value">${formatChange(properties.change_metrics.urban_density_change_percent, true)}</span>
                         </div>
                         <div class="info-metric">
                             <span class="info-label">Diversity Change:</span>
-                            <span class="info-value">${formatChange(properties.change_metrics.diversity_change_percent)}</span>
+                            <span class="info-value">${formatChange(properties.change_metrics.diversity_change_percent, false)}</span>
                         </div>
                     `;
                 }
