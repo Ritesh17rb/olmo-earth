@@ -6,6 +6,7 @@
     <title>Chennai - OlmoEarth Ward Analysis</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -63818,7 +63819,8 @@
         let labelsLayer = null;
         let currentOpacity = 0.7;
         
-        // Color scales with absolute breaks
+        // Color scales with absolute breaks        // Color scales with D3 support
+                // Color scales with D3 support
         const colorScales = {
             'data_availability': {
                 colors: ['#dc2626', '#fbbf24', '#22c55e'],
@@ -63828,48 +63830,76 @@
                 labels: ['No Data', 'Partial (1 year)', 'Complete (2 years)']
             },
             'vegetation_change_percent': {
-                colors: ['#dc2626', '#f59e0b', '#94a3b8', '#a3e635', '#22c55e'],
-                breaks: [-5, -2, -0.5, 0.5, 2],
+                domain: [-15, -5, -1, 0, 1, 5, 15],
+                range: ['#450a0a', '#991b1b', '#f59e0b', '#f8fafc', '#a3e635', '#14532d', '#064e3b'],
                 label: 'Vegetation Change (%)'
             },
             'urban_density_change_percent': {
-                colors: ['#22c55e', '#a3e635', '#94a3b8', '#f59e0b', '#dc2626'],
-                breaks: [-5, -2, -0.5, 0.5, 2],
+                domain: [-15, -5, -1, 0, 1, 5, 15],
+                range: ['#064e3b', '#14532d', '#a3e635', '#f8fafc', '#f59e0b', '#991b1b', '#450a0a'],
                 label: 'Urban Density Change (%)'
             },
             'diversity_change_percent': {
-                colors: ['#dc2626', '#f59e0b', '#94a3b8', '#a3e635', '#22c55e'],
-                breaks: [-5, -2, -0.5, 0.5, 2],
-                label: 'Diversity Change (%)'
+                 domain: [-15, -5, -1, 0, 1, 5, 15],
+                 range: ['#450a0a', '#991b1b', '#f59e0b', '#f8fafc', '#a3e635', '#14532d', '#064e3b'],
+                 label: 'Diversity Change (%)'
             },
             'vegetation_index': {
-                colors: ['#dc2626', '#f59e0b', '#fbbf24', '#a3e635', '#22c55e'],
-                breaks: [0, 0.2, 0.4, 0.6, 0.8],
+                domain: [0, 0.2, 0.4, 0.6, 0.8],
+                range: ['#991b1b', '#f59e0b', '#fbbf24', '#a3e635', '#14532d'],
                 label: 'Vegetation Index'
             },
             'urban_density': {
-                colors: ['#22c55e', '#a3e635', '#fbbf24', '#f59e0b', '#dc2626'],
-                breaks: [0, 0.2, 0.4, 0.6, 0.8],
+                domain: [0, 0.2, 0.4, 0.6, 0.8],
+                range: ['#14532d', '#a3e635', '#fbbf24', '#f59e0b', '#991b1b'],
                 label: 'Urban Density'
             },
             'feature_diversity': {
-                colors: ['#dc2626', '#f59e0b', '#fbbf24', '#a3e635', '#22c55e'],
-                breaks: [0, 5, 8, 11, 14],
+                domain: [0, 5, 8, 11, 14],
+                range: ['#991b1b', '#f59e0b', '#fbbf24', '#a3e635', '#14532d'],
                 label: 'Feature Diversity'
             }
         };
 
+        // Initialize D3 scales
+        const d3Scales = {};
+        function initScales() {
+            if (typeof d3 === 'undefined') return;
+            Object.keys(colorScales).forEach(key => {
+                const config = colorScales[key];
+                if (!config.isDiscrete) {
+                    d3Scales[key] = d3.scaleLinear()
+                        .domain(config.domain)
+                        .range(config.range)
+                        .clamp(true);
+                }
+            });
+        }
         
+        // Try initializing immediately (if d3 is loaded) or wait
+        if (typeof d3 !== 'undefined') initScales();
+        else window.addEventListener('load', initScales);
+
         function getColor(value, metric) {
-            const scale = colorScales[metric];
             if (value === null || value === undefined) return '#475569';
             
-            for (let i = scale.breaks.length - 1; i >= 0; i--) {
-                if (value >= scale.breaks[i]) {
-                    return scale.colors[i];
+            const config = colorScales[metric];
+            if (config.isDiscrete) {
+                 for (let i = config.breaks.length - 1; i >= 0; i--) {
+                    if (value >= config.breaks[i]) {
+                        return config.colors[i];
+                    }
                 }
+                return config.colors[0];
             }
-            return scale.colors[0];
+            
+            // Ensure scales are initialized
+            if (!d3Scales[metric]) initScales();
+            
+            if (d3Scales[metric]) {
+                return d3Scales[metric](value);
+            }
+            return '#475569';
         }
         
         function getMetricValue(properties, metric) {
@@ -63892,34 +63922,46 @@
                 return;
             }
             
-            const scale = colorScales[currentMetric];
+            const config = colorScales[currentMetric];
             let legendHtml = '';
             
-            if (scale.isDiscrete) {
-                legendHtml = scale.colors.map((color, i) => {
+            if (config.isDiscrete) {
+                legendHtml = config.colors.map((color, i) => {
                     return `
                         <div class="legend-item">
                             <div class="legend-color" style="background: ${color}"></div>
-                            <span>${scale.labels[i]}</span>
+                            <span>${config.labels[i]}</span>
                         </div>
                     `;
                 }).join('');
             } else {
-                legendHtml = scale.colors.map((color, i) => {
-                    const min = i === 0 ? '-∞' : scale.breaks[i].toFixed(2);
-                    const max = i === scale.colors.length - 1 ? '+∞' : scale.breaks[i + 1].toFixed(2);
-                    return `
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: ${color}"></div>
-                            <span>${min} to ${max}</span>
-                        </div>
-                    `;
-                }).join('');
+                 // Continuous Legend with Gradient
+                // Create gradient stops
+                const stops = config.range.map((color, i) => {
+                    const offset = (i / (config.range.length - 1)) * 100;
+                    return `${color} ${offset}%`;
+                }).join(', ');
+                
+                const backgroundStyle = `linear-gradient(to right, ${stops})`;
+                
+                const domain = config.domain;
+                const min = domain[0];
+                const max = domain[domain.length - 1];
+                
+                legendHtml = `
+                    <div style="margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 13px;">${config.label}</div>
+                    <div style="height: 16px; width: 100%; border-radius: 4px; background: ${backgroundStyle}; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2);"></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8;">
+                        <span>${min}</span>
+                        <span>${(min+max)/2}</span>
+                        <span>${max}</span>
+                    </div>
+                `;
             }
             
             document.getElementById('legend').innerHTML = legendHtml;
         }
-        
+
         function styleFeature(feature) {
             // If no metric selected, show neutral gray
             if (!currentMetric) {

@@ -464,7 +464,7 @@
                         <div class="card h-100 city-card" onclick="loadCity('paris', this)">
                             <div class="card-img-placeholder">
                                 <img src="assets/maps/paris.png" alt="Paris Map Landscape">
-                                <i class="bi bi-torii-gate"></i>
+                                <i class="bi bi-globe-europe-africa"></i>
                             </div>
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
@@ -513,6 +513,25 @@
                                 </div>
                                 <p class="card-text small text-muted">The Garden City. High-resolution analysis of urban
                                     density and tropical vegetation.</p>
+                                <div class="d-flex align-items-center gap-2 mt-3"><span
+                                        class="badge bg-primary">Analysis
+                                        Ready</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 city-card" onclick="loadCity('mariupol', this)">
+                            <div class="card-img-placeholder">
+                                <img src="assets/maps/mariupol.png" alt="Mariupol Map Landscape">
+                                <i class="bi bi-shield-shaded"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Mariupol</h5><span
+                                        class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10">Ukraine</span>
+                                </div>
+                                <p class="card-text small text-muted">Resilient Port City. Monitoring urban recovery and
+                                    vegetational shifts in the Donbas region.</p>
                                 <div class="d-flex align-items-center gap-2 mt-3"><span
                                         class="badge bg-primary">Analysis
                                         Ready</span></div>
@@ -1234,7 +1253,8 @@ if __name__ == "__main__":
             delhi: { url: 'delhi.html', name: 'Delhi Analysis' },
             paris: { url: 'paris.html', name: 'Paris Analysis' },
             london: { url: 'london.html', name: 'London Analysis' },
-            singapore: { url: 'singapore.html', name: 'Singapore Analysis' }
+            singapore: { url: 'singapore.html', name: 'Singapore Analysis' },
+            mariupol: { url: 'mariupol.html', name: 'Mariupol Analysis' }
         };
 
         function loadCity(cityKey, cardElement) {
