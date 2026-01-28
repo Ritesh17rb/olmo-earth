@@ -366,6 +366,12 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
                     class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                   
+                    <li class="nav-item">
+                        <a class="nav-link" href="matrix/index.html">Matrix Analysis</a>
+                    </li>
+                </ul>
 
                 <div class="nav-item dropdown ms-auto" role="group" aria-label="Toggle dark mode"
                     title="Toggle Dark Mode"><button class="dark-theme-toggle btn btn-outline-light dropdown-toggle"
@@ -460,26 +466,7 @@
                     </div>
 
                     <!-- International Cities -->
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 city-card" onclick="loadCity('paris', this)">
-                            <div class="card-img-placeholder">
-                                <img src="assets/maps/paris.png" alt="Paris Map Landscape">
-                                <i class="bi bi-globe-europe-africa"></i>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="card-title mb-0">Paris</h5><span
-                                        class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10">France</span>
-                                </div>
-                                <p class="card-text small text-muted">The City of Light. Analyzing green spaces and
-                                    urban
-                                    density in the 20 arrondissements.</p>
-                                <div class="d-flex align-items-center gap-2 mt-3"><span
-                                        class="badge bg-primary">Analysis
-                                        Ready</span></div>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 city-card" onclick="loadCity('london', this)">
                             <div class="card-img-placeholder">
@@ -513,6 +500,25 @@
                                 </div>
                                 <p class="card-text small text-muted">The Garden City. High-resolution analysis of urban
                                     density and tropical vegetation.</p>
+                                <div class="d-flex align-items-center gap-2 mt-3"><span
+                                        class="badge bg-primary">Analysis
+                                        Ready</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 city-card" onclick="loadCity('paris', this)">
+                            <div class="card-img-placeholder">
+                                <img src="assets/maps/paris.png" alt="Paris Map Landscape">
+                                <i class="bi bi-shop"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">Paris</h5><span
+                                        class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-10">France</span>
+                                </div>
+                                <p class="card-text small text-muted">City of Light. Detailed analysis of urban density
+                                    and historical preservation.</p>
                                 <div class="d-flex align-items-center gap-2 mt-3"><span
                                         class="badge bg-primary">Analysis
                                         Ready</span></div>
@@ -1251,9 +1257,10 @@ if __name__ == "__main__":
             bangalore: { url: 'bangalore.html', name: 'Bangalore Analysis' },
             chennai: { url: 'chennai.html', name: 'Chennai Analysis' },
             delhi: { url: 'delhi.html', name: 'Delhi Analysis' },
-            paris: { url: 'paris.html', name: 'Paris Analysis' },
+
             london: { url: 'london.html', name: 'London Analysis' },
             singapore: { url: 'singapore.html', name: 'Singapore Analysis' },
+            paris: { url: 'paris.html', name: 'Paris Analysis' },
             mariupol: { url: 'mariupol.html', name: 'Mariupol Analysis' }
         };
 

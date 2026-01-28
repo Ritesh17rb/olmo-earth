@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Paris - OlmoEarth Ward Analysis</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <style>
+                * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                }
+
+                body {
+                        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                        color: #e2e8f0;
+                        overflow: hidden;
+                }
+
+                #container {
+                        display: flex;
+                        height: 100vh;
+                }
+
+                #sidebar {
+                        width: 380px;
+                        background: rgba(15, 23, 42, 0.95);
+                        backdrop-filter: blur(10px);
+                        border-right: 1px solid rgba(148, 163, 184, 0.1);
+                        padding: 24px;
+                        overflow-y: auto;
+                        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+                }
+
+                #map {
+                        flex: 1;
+                        position: relative;
+                }
+
+                h1 {
+                        font-size: 28px;
+                        font-weight: 700;
+                        margin-bottom: 8px;
+                        background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
+                }
+
+                .subtitle {
+                        color: #94a3b8;
+                        font-size: 14px;
+                        margin-bottom: 24px;
+                }
+
+                .stats-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 12px;
+                        margin-bottom: 24px;
+                }
+
+                .stat-card {
+                        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+                        border: 1px solid rgba(96, 165, 250, 0.2);
+                        border-radius: 12px;
+                        padding: 16px;
+                        transition: all 0.3s ease;
+                }
+
+                .stat-card:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 24px rgba(96, 165, 250, 0.2);
+                }
+
+                .stat-label {
+                        font-size: 11px;
+                        color: #94a3b8;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        margin-bottom: 4px;
+                }
+
+                .stat-value {
+                        font-size: 24px;
+                        font-weight: 700;
+                        color: #60a5fa;
+                }
+
+                .control-section {
+                        margin-bottom: 24px;
+                }
+
+                .section-title {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: #cbd5e1;
+                        margin-bottom: 12px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                }
+
+                .metric-selector {
+                        display: grid;
+                        gap: 6px;
+                }
+
+                .metric-btn {
+                        background: rgba(30, 41, 59, 0.8);
+                        border: 1px solid rgba(148, 163, 184, 0.2);
+                        color: #cbd5e1;
+                        padding: 10px 14px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        font-size: 13px;
+                        text-align: left;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                }
+
+                .metric-btn:hover {
+                        background: rgba(59, 130, 246, 0.2);
+                        border-color: #60a5fa;
+                        transform: translateX(4px);
+                }
+
+                .metric-btn.active {
+                        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+                        border-color: #60a5fa;
+                        color: white;
+                        font-weight: 600;
+                }
+
+                .legend {
+                        background: rgba(15, 23, 42, 0.95);
+                        border: 1px solid rgba(148, 163, 184, 0.2);
+                        border-radius: 12px;
+                        padding: 16px;
+                }
+
+                .legend-item {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 8px;
+                        font-size: 12px;
+                }
+
+                .legend-color {
+                        width: 24px;
+                        height: 16px;
+                        border-radius: 4px;
+                        margin-right: 8px;
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                }
+
+                .layer-control {
+                        background: rgba(15, 23, 42, 0.95);
+                        border: 1px solid rgba(148, 163, 184, 0.2);
+                        border-radius: 12px;
+                        padding: 16px;
+                }
+
+                .layer-item {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 12px;
+                }
+
+                .layer-label {
+                        font-size: 13px;
+                        color: #cbd5e1;
+                }
+
+                .toggle-switch {
+                        position: relative;
+                        width: 44px;
+                        height: 24px;
+                }
+
+                .toggle-switch input {
+                        opacity: 0;
+                        width: 0;
+                        height: 0;
+                }
+
+                .slider {
+                        position: absolute;
+                        cursor: pointer;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-color: rgba(148, 163, 184, 0.3);
+                        transition: 0.4s;
+                        border-radius: 24px;
+                }
+
+                .slider:before {
+                        position: absolute;
+                        content: "";
+                        height: 18px;
+                        width: 18px;
+                        left: 3px;
+                        bottom: 3px;
+                        background-color: white;
+                        transition: 0.4s;
+                        border-radius: 50%;
+                }
+
+                input:checked+.slider {
+                        background-color: #3b82f6;
+                }
+
+                input:checked+.slider:before {
+                        transform: translateX(20px);
+                }
+
+                .opacity-control {
+                        margin-top: 8px;
+                }
+
+                .opacity-slider {
+                        width: 100%;
+                        height: 6px;
+                        border-radius: 3px;
+                        background: linear-gradient(to right, rgba(96, 165, 250, 0.1), rgba(96, 165, 250, 0.4));
+                        outline: none;
+                        -webkit-appearance: none;
+                        transition: all 0.3s ease;
+                }
+
+                .opacity-slider:hover {
+                        background: linear-gradient(to right, rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.5));
+                }
+
+                .opacity-slider::-webkit-slider-thumb {
+                        -webkit-appearance: none;
+                        appearance: none;
+                        width: 20px;
+                        height: 20px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, #60a5fa, #3b82f6);
+                        cursor: pointer;
+                        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+                        transition: all 0.2s ease;
+                }
+
+                .opacity-slider::-webkit-slider-thumb:hover {
+                        transform: scale(1.15);
+                        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+                }
+
+                .opacity-slider::-moz-range-thumb {
+                        width: 20px;
+                        height: 20px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, #60a5fa, #3b82f6);
+                        cursor: pointer;
+                        border: none;
+                        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+                        transition: all 0.2s ease;
+                }
+
+                .opacity-slider::-moz-range-thumb:hover {
+                        transform: scale(1.15);
+                        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+                }
+
+                .info-box {
+                        position: absolute;
+                        top: 20px;
+                        right: 20px;
+                        background: rgba(15, 23, 42, 0.95);
+                        backdrop-filter: blur(10px);
+                        border: 1px solid rgba(148, 163, 184, 0.2);
+                        border-radius: 12px;
+                        padding: 16px;
+                        max-width: 320px;
+                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+                        display: none;
+                        z-index: 1000;
+                }
+
+                .info-box.visible {
+                        display: block;
+                }
+
+                .info-title {
+                        font-size: 16px;
+                        font-weight: 600;
+                        color: #60a5fa;
+                        margin-bottom: 12px;
+                }
+
+                .info-metric {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 8px;
+                        font-size: 13px;
+                }
+
+                .info-label {
+                        color: #94a3b8;
+                }
+
+                .info-value {
+                        color: #e2e8f0;
+                        font-weight: 600;
+                }
+
+                .data-status {
+                        display: inline-block;
+                        padding: 4px 8px;
+                        border-radius: 4px;
+                        font-size: 11px;
+                        font-weight: 600;
+                        margin-top: 8px;
+                }
+
+                .status-complete {
+                        background: rgba(34, 197, 94, 0.2);
+                        color: #22c55e;
+                        border: 1px solid rgba(34, 197, 94, 0.3);
+                }
+
+                .status-partial {
+                        background: rgba(251, 191, 36, 0.2);
+                        color: #fbbf24;
+                        border: 1px solid rgba(251, 191, 36, 0.3);
+                }
+
+                ::-webkit-scrollbar {
+                        width: 8px;
+                }
+
+                ::-webkit-scrollbar-track {
+                        background: rgba(30, 41, 59, 0.5);
+                }
+
+                ::-webkit-scrollbar-thumb {
+                        background: rgba(96, 165, 250, 0.3);
+                        border-radius: 4px;
+                }
+
+                ::-webkit-scrollbar-thumb:hover {
+                        background: rgba(96, 165, 250, 0.5);
+                }
+
+                .leaflet-popup-content-wrapper {
+                        background: rgba(15, 23, 42, 0.95);
+                        color: #e2e8f0;
+                        border-radius: 8px;
+                }
+
+                .leaflet-popup-tip {
+                        background: rgba(15, 23, 42, 0.95);
+                }
+        </style>
+</head>
+
+<body>
+        <div id="container">
+                <div id="sidebar">
+                        <h1>Paris</h1>
+                        <div class="subtitle">France • Ward Analysis</div>
+
+                        <div class="stats-grid">
+                                <div class="stat-card">
+                                        <div class="stat-label">Total Wards</div>
+                                        <div class="stat-value">20</div>
+                                </div>
+                                <div class="stat-card">
+                                        <div class="stat-label">With Change</div>
+                                        <div class="stat-value">20</div>
+                                </div>
+                        </div>
+
+                        <div class="control-section">
+
+
+                                <div class="section-title">Analysis Metrics</div>
+
+
+                                <div class="metric-selector">
+
+                                        <button class="metric-btn" data-metric="vegetation_index">
+                                                🌿 Vegetation Index
+                                        </button>
+
+                                        <button class="metric-btn" data-metric="urban_density">
+                                                🏢 Urban Density
+                                        </button>
+
+                                        <button class="metric-btn" data-metric="feature_diversity">
+                                                🎨 Feature Diversity
+                                        </button>
+
+
+                                </div>
+
+
+                        </div>
+
+
+
+                        <div class="control-section">
+
+
+                                <div class="section-title">Change Metrics</div>
+
+
+                                <div class="metric-selector">
+
+                                        <button class="metric-btn" data-metric="vegetation_change_percent">
+                                                🌳 Vegetation Change (%)
+                                        </button>
+
+                                        <button class="metric-btn" data-metric="urban_density_change_percent">
+                                                🏙️ Urban Density Change (%)
+                                        </button>
+
+                                        <button class="metric-btn" data-metric="diversity_change_percent">
+                                                📈 Diversity Change (%)
+                                        </button>
+
+
+                                </div>
+
+
+                        </div>
+
+                        <div class="control-section">
+                                <div class="section-title">Layers</div>
+                                <div class="layer-control">
+                                        <div class="layer-item">
+                                                <span class="layer-label">OpenStreetMap Overlay</span>
+                                                <label class="toggle-switch">
+                                                        <input type="checkbox" id="osm-toggle">
+                                                        <span class="slider"></span>
+                                                </label>
+                                        </div>
+                                        <div class="layer-item">
+                                                <span class="layer-label">Satellite Imagery</span>
+                                                <label class="toggle-switch">
+                                                        <input type="checkbox" id="satellite-toggle">
+                                                        <span class="slider"></span>
+                                                </label>
+                                        </div>
+                                        <div class="layer-item">
+                                                <span class="layer-label">Ward Boundaries</span>
+                                                <label class="toggle-switch">
+                                                        <input type="checkbox" id="boundaries-toggle" checked>
+                                                        <span class="slider"></span>
+                                                </label>
+                                        </div>
+                                        <div class="opacity-control">
+                                                <div class="layer-label" style="margin-bottom: 8px;">Layer Opacity</div>
+                                                <input type="range" min="0" max="100" value="70" class="opacity-slider"
+                                                        id="opacity-slider">
+                                        </div>
+                                </div>
+                        </div>
+
+                        <div class="control-section">
+                                <div class="section-title">Legend</div>
+                                <div class="legend" id="legend">
+                                        <!-- Dynamic legend will be inserted here -->
+                                </div>
+                        </div>
+                </div>
+
+                <div id="map"></div>
+                <div id="info-box" class="info-box"></div>
+        </div>
+
+        <script>
+                // Ward data
+                const wardsData = { "type": "FeatureCollection", "features": [{ "type": "Feature", "properties": { "name": "Bourse", "cartodb_id": 2, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:36:18.682Z", "analysis": { "ward_name": "Bourse", "ward_no": "2", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3130979537963867, "urban_density": 0.22504717111587524, "change_intensity": 0.3278903067111969, "feature_diversity": 9.013980865478516, "spatial_heterogeneity": 280.0450134277344, "coverage_percent": 52.326530612244895, "pixel_count": 492288, "mean_embedding": 0.0011698486050590873, "std_embedding": 0.3278903067111969 }, "change_metrics": { "vegetation_change": -0.009768128395080566, "vegetation_change_percent": -3.025442724977173, "urban_density_change": -0.008158400654792786, "urban_density_change_percent": -3.4983729560354044, "diversity_change": -0.30010986328125, "diversity_change_percent": -3.222105861118358, "overall_change_magnitude": 1.2688222341239452e-05 }, "metrics_2019": { "vegetation_index": 0.3228660821914673, "urban_density": 0.23320557177066803, "feature_diversity": 9.314090728759766, "pixel_count": 492288, "spatial_heterogeneity": 280.0450134277344, "change_intensity": 0.3278903067111969 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.339999, 48.87196], [2.34789, 48.870689], [2.35433, 48.869308], [2.350979, 48.863411], [2.330292, 48.868294], [2.328211, 48.86972], [2.328072, 48.869923], [2.339999, 48.87196]]]] } }, { "type": "Feature", "properties": { "name": "Temple", "cartodb_id": 3, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:36:24.060Z", "analysis": { "ward_name": "Temple", "ward_no": "3", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.31387120485305786, "urban_density": 0.22535957396030426, "change_intensity": 0.3264344036579132, "feature_diversity": 8.873529434204102, "spatial_heterogeneity": 304.5963134765625, "coverage_percent": 60.40723981900452, "pixel_count": 615168, "mean_embedding": 0.0010706952307373285, "std_embedding": 0.3264344036579132 }, "change_metrics": { "vegetation_change": -0.005226463079452515, "vegetation_change_percent": -1.6378882093735385, "urban_density_change": -0.005230918526649475, "urban_density_change_percent": -2.2684883796522652, "diversity_change": -0.3536949157714844, "diversity_change_percent": -3.833166967186836, "overall_change_magnitude": 0.000122594996355474 }, "metrics_2019": { "vegetation_index": 0.3190976679325104, "urban_density": 0.23059049248695374, "feature_diversity": 9.227224349975586, "pixel_count": 615168, "spatial_heterogeneity": 304.5963134765625, "change_intensity": 0.3264344036579132 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.36236, 48.867905], [2.364764, 48.866436], [2.366694, 48.86319], [2.368454, 48.85582], [2.364335, 48.856441], [2.361631, 48.857262], [2.358626, 48.858757], [2.356825, 48.860111], [2.353391, 48.861214], [2.350172, 48.862034], [2.354249, 48.869286], [2.36236, 48.867905]]]] } }, { "type": "Feature", "properties": { "name": "Panth\u00e9on", "cartodb_id": 5, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:36:34.699Z", "analysis": { "ward_name": "Panth\u00e9on", "ward_no": "5", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3098349869251251, "urban_density": 0.2241412252187729, "change_intensity": 0.3254324793815613, "feature_diversity": 9.267702102661133, "spatial_heterogeneity": 246.71876525878906, "coverage_percent": 60.96938775510205, "pixel_count": 1284864, "mean_embedding": 0.0013180422829464078, "std_embedding": 0.3254324793815613 }, "change_metrics": { "vegetation_change": -0.004685074090957642, "vegetation_change_percent": -1.4895946782606255, "urban_density_change": -0.003514900803565979, "urban_density_change_percent": -1.5439517771733837, "diversity_change": -0.24341297149658203, "diversity_change_percent": -2.559247465714615, "overall_change_magnitude": 8.409540168941021e-05 }, "metrics_2019": { "vegetation_index": 0.31452006101608276, "urban_density": 0.22765612602233887, "feature_diversity": 9.511115074157715, "pixel_count": 1284864, "spatial_heterogeneity": 246.71876525878906, "change_intensity": 0.3254324793815613 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.351799, 48.83675], [2.345489, 48.837601], [2.336462, 48.839622], [2.342576, 48.850258], [2.344199, 48.85376], [2.3445, 48.854038], [2.346859, 48.853298], [2.350169, 48.851997], [2.3548, 48.850788], [2.36098, 48.84861], [2.366, 48.844997], [2.36493, 48.844379], [2.361839, 48.84], [2.351799, 48.83675]]]] } }, { "type": "Feature", "properties": { "name": "Luxembourg", "cartodb_id": 6, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:36:40.774Z", "analysis": { "ward_name": "Luxembourg", "ward_no": "6", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3119085431098938, "urban_density": 0.22532163560390472, "change_intensity": 0.3252710700035095, "feature_diversity": 9.12747573852539, "spatial_heterogeneity": 228.90261840820312, "coverage_percent": 54.17112299465241, "pixel_count": 777984, "mean_embedding": 0.0014200019650161266, "std_embedding": 0.3252710700035095 }, "change_metrics": { "vegetation_change": -0.005509436130523682, "vegetation_change_percent": -1.7357038639423592, "urban_density_change": -0.004575207829475403, "urban_density_change_percent": -1.9901133748281385, "diversity_change": -0.2427530288696289, "diversity_change_percent": -2.5906841219749186, "overall_change_magnitude": 5.3348951041698456e-05 }, "metrics_2019": { "vegetation_index": 0.3174179792404175, "urban_density": 0.22989684343338013, "feature_diversity": 9.37022876739502, "pixel_count": 777984, "spatial_heterogeneity": 228.90261840820312, "change_intensity": 0.3252710700035095 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.316469, 48.846851], [2.31904, 48.847851], [2.32412, 48.850311], [2.32704, 48.851608], [2.32866, 48.851952], [2.331599, 48.856339], [2.33386, 48.85918], [2.337499, 48.85849], [2.340592, 48.85675], [2.342512, 48.855247], [2.344465, 48.853992], [2.34425, 48.853767], [2.342639, 48.850349], [2.33652, 48.83963], [2.31999, 48.8451], [2.316469, 48.846851]]]] } }, { "type": "Feature", "properties": { "name": "Palais-Bourbon", "cartodb_id": 7, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:36:45.091Z", "analysis": { "ward_name": "Palais-Bourbon", "ward_no": "7", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3133135437965393, "urban_density": 0.22705771028995514, "change_intensity": 0.3303857743740082, "feature_diversity": 8.992846488952637, "spatial_heterogeneity": 261.45196533203125, "coverage_percent": 33.71069182389937, "pixel_count": 205824, "mean_embedding": 0.0012626575771719217, "std_embedding": 0.3303857743740082 }, "change_metrics": { "vegetation_change": -0.007350325584411621, "vegetation_change_percent": -2.292221321535724, "urban_density_change": -0.0054957568645477295, "urban_density_change_percent": -2.3632229318243114, "diversity_change": -0.6190404891967773, "diversity_change_percent": -6.440363797494025, "overall_change_magnitude": 0.00011464254930615425 }, "metrics_2019": { "vegetation_index": 0.3206638693809509, "urban_density": 0.23255346715450287, "feature_diversity": 9.611886978149414, "pixel_count": 205824, "spatial_heterogeneity": 261.45196533203125, "change_intensity": 0.3303857743740082 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.309531, 48.84581], [2.307342, 48.847153], [2.289877, 48.858192], [2.294769, 48.861862], [2.300219, 48.863499], [2.31833, 48.863838], [2.331462, 48.859676], [2.333844, 48.85918], [2.33159, 48.856258], [2.33041, 48.854424], [2.329295, 48.852673], [2.328479, 48.851826], [2.327106, 48.851601], [2.319274, 48.847801], [2.313651, 48.845909], [2.311355, 48.845215], [2.309531, 48.84581]]]] } }, { "type": "Feature", "properties": { "name": "\u00c9lys\u00e9e", "cartodb_id": 8, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:36:51.084Z", "analysis": { "ward_name": "\u00c9lys\u00e9e", "ward_no": "8", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.299530953168869, "urban_density": 0.2191406488418579, "change_intensity": 0.3277212679386139, "feature_diversity": 9.302389144897461, "spatial_heterogeneity": 242.37738037109375, "coverage_percent": 57.30994152046783, "pixel_count": 75264, "mean_embedding": 0.0013511115685105324, "std_embedding": 0.3277212679386139 }, "change_metrics": { "vegetation_change": -0.015103131532669067, "vegetation_change_percent": -4.8002210399410155, "urban_density_change": -0.011025100946426392, "urban_density_change_percent": -4.790070180540642, "diversity_change": -0.209991455078125, "diversity_change_percent": -2.2075594313232583, "overall_change_magnitude": 2.2720894776284695e-05 }, "metrics_2019": { "vegetation_index": 0.3146340847015381, "urban_density": 0.2301657497882843, "feature_diversity": 9.512380599975586, "pixel_count": 75264, "spatial_heterogeneity": 242.37738037109375, "change_intensity": 0.3277212679386139 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.30155, 48.864601], [2.299869, 48.865131], [2.298799, 48.86869], [2.297299, 48.871151], [2.295539, 48.87326], [2.29457, 48.873192], [2.294029, 48.873669], [2.294399, 48.87429], [2.295409, 48.874317], [2.297769, 48.87775], [2.297639, 48.878029], [2.298049, 48.87846], [2.298799, 48.87825], [2.309009, 48.880459], [2.316609, 48.88134], [2.32721, 48.88345], [2.326849, 48.875908], [2.326611, 48.875404], [2.326976, 48.873825], [2.326869, 48.873329], [2.32629, 48.872597], [2.326505, 48.872471], [2.325819, 48.869534], [2.325152, 48.869392], [2.32526, 48.869019], [2.320769, 48.863098], [2.31828, 48.863811], [2.30167, 48.863522], [2.30155, 48.864601]]]] } }, { "type": "Feature", "properties": { "name": "Op\u00e9ra", "cartodb_id": 9, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:00.221Z", "analysis": { "ward_name": "Op\u00e9ra", "ward_no": "9", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.30738067626953125, "urban_density": 0.22194501757621765, "change_intensity": 0.3257429301738739, "feature_diversity": 9.23023509979248, "spatial_heterogeneity": 266.43841552734375, "coverage_percent": 68.06201550387597, "pixel_count": 1011456, "mean_embedding": 0.0012215824099257588, "std_embedding": 0.3257429301738739 }, "change_metrics": { "vegetation_change": -0.01168912649154663, "vegetation_change_percent": -3.663501337448579, "urban_density_change": -0.008762523531913757, "urban_density_change_percent": -3.7981088480357945, "diversity_change": -0.3286561965942383, "diversity_change_percent": -3.438225066106474, "overall_change_magnitude": 2.0421226508915424e-05 }, "metrics_2019": { "vegetation_index": 0.3190698027610779, "urban_density": 0.2307075411081314, "feature_diversity": 9.558891296386719, "pixel_count": 1011456, "spatial_heterogeneity": 266.43841552734375, "change_intensity": 0.3257429301738739 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.339599, 48.882011], [2.34952, 48.883781], [2.34987, 48.880692], [2.349209, 48.87888], [2.349, 48.87722], [2.348139, 48.87566], [2.34785, 48.873871], [2.34789, 48.870689], [2.34004, 48.87196], [2.32579, 48.869572], [2.326519, 48.872471], [2.326309, 48.872589], [2.32688, 48.873341], [2.326979, 48.873779], [2.32663, 48.875439], [2.32682, 48.87595], [2.32717, 48.883419], [2.327929, 48.883621], [2.32948, 48.884651], [2.337406, 48.882271], [2.339599, 48.882011]]]] } }, { "type": "Feature", "properties": { "name": "Enclos-St-Laurent", "cartodb_id": 10, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:05.756Z", "analysis": { "ward_name": "Enclos-St-Laurent", "ward_no": "10", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.31132054328918457, "urban_density": 0.22424666583538055, "change_intensity": 0.32590246200561523, "feature_diversity": 9.256414413452148, "spatial_heterogeneity": 266.38800048828125, "coverage_percent": 72.14663643235072, "pixel_count": 1466112, "mean_embedding": 0.0012224126840010285, "std_embedding": 0.32590246200561523 }, "change_metrics": { "vegetation_change": -0.007063806056976318, "vegetation_change_percent": -2.218641108296517, "urban_density_change": -0.0059051066637039185, "urban_density_change_percent": -2.565744595222445, "diversity_change": -0.09293079376220703, "diversity_change_percent": -0.9939818426053799, "overall_change_magnitude": 0.00010098505299538374 }, "metrics_2019": { "vegetation_index": 0.3183843493461609, "urban_density": 0.23015177249908447, "feature_diversity": 9.349345207214355, "pixel_count": 1466112, "spatial_heterogeneity": 266.38800048828125, "change_intensity": 0.32590246200561523 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.368755, 48.884079], [2.369142, 48.883289], [2.370213, 48.882637], [2.370257, 48.878632], [2.370814, 48.878124], [2.370601, 48.87756], [2.376952, 48.872108], [2.372917, 48.870644], [2.364205, 48.86779], [2.363477, 48.867226], [2.362404, 48.867905], [2.354293, 48.869286], [2.347941, 48.870728], [2.347812, 48.873943], [2.348155, 48.875751], [2.348971, 48.877277], [2.349272, 48.879223], [2.349873, 48.880692], [2.349486, 48.883797], [2.359227, 48.884472], [2.364806, 48.884361], [2.368755, 48.884079]]]] } }, { "type": "Feature", "properties": { "name": "Popincourt", "cartodb_id": 11, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:14.753Z", "analysis": { "ward_name": "Popincourt", "ward_no": "11", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3140156865119934, "urban_density": 0.22555853426456451, "change_intensity": 0.3258971571922302, "feature_diversity": 9.076189994812012, "spatial_heterogeneity": 262.9440002441406, "coverage_percent": 53.18261633011413, "pixel_count": 1860864, "mean_embedding": 0.001238416531123221, "std_embedding": 0.3258971571922302 }, "change_metrics": { "vegetation_change": -0.004439294338226318, "vegetation_change_percent": -1.3940100187392799, "urban_density_change": -0.004155829548835754, "urban_density_change_percent": -1.8091291636475917, "diversity_change": -0.4580965042114258, "diversity_change_percent": -4.804727697854967, "overall_change_magnitude": 0.00014223274774849415 }, "metrics_2019": { "vegetation_index": 0.3184549808502197, "urban_density": 0.22971436381340027, "feature_diversity": 9.534286499023438, "pixel_count": 1860864, "spatial_heterogeneity": 262.9440002441406, "change_intensity": 0.3258971571922302 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.383175, 48.867115], [2.383776, 48.86607], [2.387465, 48.862823], [2.389654, 48.858444], [2.39223, 48.857571], [2.394321, 48.856548], [2.398398, 48.85133], [2.399214, 48.848709], [2.399064, 48.848103], [2.395899, 48.848351], [2.384291, 48.85017], [2.379999, 48.850483], [2.371544, 48.852459], [2.370257, 48.853222], [2.369184, 48.853081], [2.366737, 48.86319], [2.36472, 48.866409], [2.363477, 48.867256], [2.364205, 48.86779], [2.376866, 48.872108], [2.383175, 48.867115]]]] } }, { "type": "Feature", "properties": { "name": "Gobelins", "cartodb_id": 13, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:25.726Z", "analysis": { "ward_name": "Gobelins", "ward_no": "13", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3089466392993927, "urban_density": 0.22271452844142914, "change_intensity": 0.3210262358188629, "feature_diversity": 10.0875825881958, "spatial_heterogeneity": 213.98822021484375, "coverage_percent": 63.17340067340067, "pixel_count": 3458304, "mean_embedding": 0.0014992051292210817, "std_embedding": 0.3210262358188629 }, "change_metrics": { "vegetation_change": -0.007020294666290283, "vegetation_change_percent": -2.2218447285540184, "urban_density_change": -0.005576774477958679, "urban_density_change_percent": -2.442832646992207, "diversity_change": -0.14374542236328125, "diversity_change_percent": -1.4049537089899868, "overall_change_magnitude": 0.00012205715756863356 }, "metrics_2019": { "vegetation_index": 0.315966933965683, "urban_density": 0.22829130291938782, "feature_diversity": 10.231328010559082, "pixel_count": 3458304, "spatial_heterogeneity": 213.98822021484375, "change_intensity": 0.3210262358188629 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.342039, 48.838322], [2.345431, 48.837605], [2.348927, 48.837067], [2.35189, 48.836731], [2.36193, 48.840031], [2.36493, 48.844379], [2.365959, 48.844997], [2.38856, 48.826481], [2.385269, 48.825298], [2.37881, 48.82148], [2.363339, 48.816132], [2.356799, 48.816441], [2.3544, 48.817501], [2.351669, 48.817989], [2.346839, 48.81641], [2.34405, 48.816441], [2.3441, 48.817631], [2.34459, 48.819382], [2.343939, 48.820278], [2.34242, 48.821461], [2.34146, 48.823658], [2.34165, 48.826408], [2.34131, 48.831429], [2.34111, 48.831947], [2.342039, 48.838322]]]] } }, { "type": "Feature", "properties": { "name": "Observatoire", "cartodb_id": 14, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:30.531Z", "analysis": { "ward_name": "Observatoire", "ward_no": "14", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.30670225620269775, "urban_density": 0.2221895158290863, "change_intensity": 0.3215791881084442, "feature_diversity": 9.759449005126953, "spatial_heterogeneity": 202.24267578125, "coverage_percent": 62.33766233766234, "pixel_count": 1253376, "mean_embedding": 0.001589065883308649, "std_embedding": 0.3215791881084442 }, "change_metrics": { "vegetation_change": -0.0065762996673583984, "vegetation_change_percent": -2.0991860260254014, "urban_density_change": -0.004749193787574768, "urban_density_change_percent": -2.092720891731949, "diversity_change": 0.014469146728515625, "diversity_change_percent": 0.1484779541749981, "overall_change_magnitude": 0.00012164434883743525 }, "metrics_2019": { "vegetation_index": 0.31327855587005615, "urban_density": 0.22693870961666107, "feature_diversity": 9.744979858398438, "pixel_count": 1253376, "spatial_heterogeneity": 202.24267578125, "change_intensity": 0.3215791881084442 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.301464, 48.825428], [2.321032, 48.841503], [2.321547, 48.840996], [2.324594, 48.843651], [2.336396, 48.839695], [2.342105, 48.838284], [2.341117, 48.831982], [2.341504, 48.828793], [2.341632, 48.8256], [2.341504, 48.823254], [2.34249, 48.821304], [2.344036, 48.820118], [2.344551, 48.819355], [2.344164, 48.817574], [2.344078, 48.816502], [2.33571, 48.816811], [2.332878, 48.818478], [2.301464, 48.825428]]]] } }, { "type": "Feature", "properties": { "name": "Vaugirard", "cartodb_id": 15, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:35.322Z", "analysis": { "ward_name": "Vaugirard", "ward_no": "15", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3103025257587433, "urban_density": 0.22424839437007904, "change_intensity": 0.3242201507091522, "feature_diversity": 9.951435089111328, "spatial_heterogeneity": 229.45440673828125, "coverage_percent": 50.97152751058099, "pixel_count": 4069632, "mean_embedding": 0.0014120046980679035, "std_embedding": 0.3242201507091522 }, "change_metrics": { "vegetation_change": -0.006510287523269653, "vegetation_change_percent": -2.0549318873269433, "urban_density_change": -0.0044437795877456665, "urban_density_change_percent": -1.9431270912511358, "diversity_change": -0.30064964294433594, "diversity_change_percent": -2.932570797081699, "overall_change_magnitude": 8.387619163841009e-05 }, "metrics_2019": { "vegetation_index": 0.31681281328201294, "urban_density": 0.2286921739578247, "feature_diversity": 10.252084732055664, "pixel_count": 4069632, "spatial_heterogeneity": 229.45440673828125, "change_intensity": 0.3242201507091522 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.292365, 48.827492], [2.277001, 48.833763], [2.274255, 48.830429], [2.275027, 48.829807], [2.272797, 48.82896], [2.270564, 48.828114], [2.267818, 48.828171], [2.267303, 48.831108], [2.27065, 48.833591], [2.269191, 48.835342], [2.266188, 48.834724], [2.264127, 48.835175], [2.278204, 48.849014], [2.287644, 48.855679], [2.289963, 48.858276], [2.309274, 48.845852], [2.311335, 48.845287], [2.316483, 48.846813], [2.320003, 48.845173], [2.324552, 48.843594], [2.321633, 48.841049], [2.320948, 48.841618], [2.301464, 48.825512], [2.292365, 48.827492]]]] } }, { "type": "Feature", "properties": { "name": "Passy", "cartodb_id": 16, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:40.880Z", "analysis": { "ward_name": "Passy", "ward_no": "16", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.306667685508728, "urban_density": 0.22331814467906952, "change_intensity": 0.3264907896518707, "feature_diversity": 9.827642440795898, "spatial_heterogeneity": 195.5791778564453, "coverage_percent": 58.18335208098988, "pixel_count": 7944960, "mean_embedding": 0.0016683535650372505, "std_embedding": 0.3264907896518707 }, "change_metrics": { "vegetation_change": -0.005558431148529053, "vegetation_change_percent": -1.780258233372182, "urban_density_change": -0.0031529664993286133, "urban_density_change_percent": -1.3922157589649156, "diversity_change": -0.3742809295654297, "diversity_change_percent": -3.668729081545469, "overall_change_magnitude": 0.00013833120465278625 }, "metrics_2019": { "vegetation_index": 0.3122261166572571, "urban_density": 0.22647111117839813, "feature_diversity": 10.201923370361328, "pixel_count": 7944960, "spatial_heterogeneity": 195.5791778564453, "change_intensity": 0.3264907896518707 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.28007, 48.878292], [2.294939, 48.873859], [2.297387, 48.871193], [2.299039, 48.868427], [2.29991, 48.865269], [2.301571, 48.864574], [2.3018, 48.863361], [2.29408, 48.86166], [2.28893, 48.85759], [2.28601, 48.854321], [2.277429, 48.847988], [2.26404, 48.835121], [2.257859, 48.835678], [2.253909, 48.839298], [2.25477, 48.845398], [2.2503, 48.845509], [2.241719, 48.848328], [2.2273, 48.84856], [2.225929, 48.85545], [2.23159, 48.86652], [2.23932, 48.870468], [2.2467, 48.876339], [2.25511, 48.874199], [2.258199, 48.88052], [2.28007, 48.878292]]]] } }, { "type": "Feature", "properties": { "name": "Batignolles-Monceau", "cartodb_id": 17, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:46.239Z", "analysis": { "ward_name": "Batignolles-Monceau", "ward_no": "17", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3062070608139038, "urban_density": 0.22479726374149323, "change_intensity": 0.324657678604126, "feature_diversity": 8.91152572631836, "spatial_heterogeneity": 214.99697875976562, "coverage_percent": 27.192982456140353, "pixel_count": 142848, "mean_embedding": 0.001509056892246008, "std_embedding": 0.324657678604126 }, "change_metrics": { "vegetation_change": -0.0032491683959960938, "vegetation_change_percent": -1.0499605725474757, "urban_density_change": -0.003506973385810852, "urban_density_change_percent": -1.5360964955965046, "diversity_change": -0.2036447525024414, "diversity_change_percent": -2.23412993729094, "overall_change_magnitude": 2.7805217541754246e-05 }, "metrics_2019": { "vegetation_index": 0.3094562292098999, "urban_density": 0.22830423712730408, "feature_diversity": 9.1151704788208, "pixel_count": 142848, "spatial_heterogeneity": 214.99697875976562, "change_intensity": 0.324657678604126 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.27999, 48.878361], [2.28325, 48.882771], [2.29185, 48.88842], [2.29768, 48.889648], [2.306185, 48.895111], [2.314081, 48.898159], [2.32188, 48.900612], [2.33013, 48.900799], [2.32562, 48.887589], [2.32721, 48.88345], [2.31691, 48.881302], [2.30867, 48.880402], [2.29807, 48.878151], [2.29502, 48.873909], [2.27999, 48.878361]]]] } }, { "type": "Feature", "properties": { "name": "Butte-Montmartre", "cartodb_id": 18, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:52.398Z", "analysis": { "ward_name": "Butte-Montmartre", "ward_no": "18", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.30885300040245056, "urban_density": 0.2240072339773178, "change_intensity": 0.3244592547416687, "feature_diversity": 9.813655853271484, "spatial_heterogeneity": 231.45425415039062, "coverage_percent": 70.84491978609626, "pixel_count": 2543616, "mean_embedding": 0.0014008288271725178, "std_embedding": 0.3244592547416687 }, "change_metrics": { "vegetation_change": -0.004638224840164185, "vegetation_change_percent": -1.479538968459039, "urban_density_change": -0.003352060914039612, "urban_density_change_percent": -1.4743452277336533, "diversity_change": 0.4032764434814453, "diversity_change_percent": 4.285442976527586, "overall_change_magnitude": 4.572095349431038e-06 }, "metrics_2019": { "vegetation_index": 0.31349122524261475, "urban_density": 0.22735929489135742, "feature_diversity": 9.410379409790039, "pixel_count": 2543616, "spatial_heterogeneity": 231.45425415039062, "change_intensity": 0.3244592547416687 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.370379, 48.900719], [2.370379, 48.896709], [2.37184, 48.895359], [2.370289, 48.894459], [2.367081, 48.887592], [2.36663, 48.886604], [2.36472, 48.884411], [2.358789, 48.884411], [2.34952, 48.883678], [2.339739, 48.88187], [2.337254, 48.882286], [2.32953, 48.88443], [2.32792, 48.883526], [2.327192, 48.883415], [2.325603, 48.887619], [2.33021, 48.900829], [2.353209, 48.901279], [2.370379, 48.900719]]]] } }, { "type": "Feature", "properties": { "name": "Buttes-Chaumont", "cartodb_id": 19, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:58.058Z", "analysis": { "ward_name": "Buttes-Chaumont", "ward_no": "19", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.30806851387023926, "urban_density": 0.22319632768630981, "change_intensity": 0.32190367579460144, "feature_diversity": 9.665995597839355, "spatial_heterogeneity": 208.59957885742188, "coverage_percent": 57.67841011743451, "pixel_count": 2942208, "mean_embedding": 0.00154216552618891, "std_embedding": 0.32190367579460144 }, "change_metrics": { "vegetation_change": -0.004658401012420654, "vegetation_change_percent": -1.4896066794150291, "urban_density_change": -0.0030308961868286133, "urban_density_change_percent": -1.339757494671928, "diversity_change": 0.20849132537841797, "diversity_change_percent": 2.2045068061509467, "overall_change_magnitude": 9.115156717598438e-05 }, "metrics_2019": { "vegetation_index": 0.3127269148826599, "urban_density": 0.22622722387313843, "feature_diversity": 9.457504272460938, "pixel_count": 2942208, "spatial_heterogeneity": 208.59957885742188, "change_intensity": 0.32190367579460144 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.408749, 48.877857], [2.402309, 48.875999], [2.395255, 48.875259], [2.39021, 48.875549], [2.387719, 48.874531], [2.386519, 48.874649], [2.38472, 48.873859], [2.376819, 48.872219], [2.370379, 48.87809], [2.37021, 48.882771], [2.36892, 48.883339], [2.368669, 48.884132], [2.364742, 48.884403], [2.366781, 48.886688], [2.368348, 48.890202], [2.370289, 48.894508], [2.37175, 48.89547], [2.370279, 48.896648], [2.370379, 48.90078], [2.3769, 48.900269], [2.38849, 48.900661], [2.392009, 48.899818], [2.39381, 48.898239], [2.39725, 48.88588], [2.401879, 48.88176], [2.4066, 48.880119], [2.408749, 48.877857]]]] } }, { "type": "Feature", "properties": { "name": "Louvre", "cartodb_id": 1, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:36:13.177Z", "analysis": { "ward_name": "Louvre", "ward_no": "1", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.31341075897216797, "urban_density": 0.2267446666955948, "change_intensity": 0.3282570540904999, "feature_diversity": 9.640420913696289, "spatial_heterogeneity": 231.31869506835938, "coverage_percent": 48.156899810964084, "pixel_count": 782592, "mean_embedding": 0.001418068422935903, "std_embedding": 0.3282570540904999 }, "change_metrics": { "vegetation_change": -0.006303548812866211, "vegetation_change_percent": -1.9716192423595, "urban_density_change": -0.0045119524002075195, "urban_density_change_percent": -1.9510587060595053, "diversity_change": -0.3541736602783203, "diversity_change_percent": -3.5436520977105923, "overall_change_magnitude": 2.703291829675436e-05 }, "metrics_2019": { "vegetation_index": 0.3197143077850342, "urban_density": 0.2312566190958023, "feature_diversity": 9.99459457397461, "pixel_count": 782592, "spatial_heterogeneity": 231.31869506835938, "change_intensity": 0.3282570540904999 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.320769, 48.863037], [2.325229, 48.868938], [2.325149, 48.869419], [2.328018, 48.869949], [2.330302, 48.868286], [2.350944, 48.863407], [2.347351, 48.857124], [2.34691, 48.856972], [2.345966, 48.855373], [2.344529, 48.854012], [2.3424, 48.855247], [2.340469, 48.8568], [2.33725, 48.858467], [2.331459, 48.85968], [2.320769, 48.863037]]]] } }, { "type": "Feature", "properties": { "name": "H\u00f4tel-de-Ville", "cartodb_id": 4, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:36:29.259Z", "analysis": { "ward_name": "H\u00f4tel-de-Ville", "ward_no": "4", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.31257885694503784, "urban_density": 0.22619283199310303, "change_intensity": 0.3288961946964264, "feature_diversity": 9.474224090576172, "spatial_heterogeneity": 291.449462890625, "coverage_percent": 50.9713228492137, "pixel_count": 846336, "mean_embedding": 0.0011274844873696566, "std_embedding": 0.3288961946964264 }, "change_metrics": { "vegetation_change": -0.006174147129058838, "vegetation_change_percent": -1.936969079552144, "urban_density_change": -0.004605025053024292, "urban_density_change_percent": -1.9952633494789904, "diversity_change": -0.20052528381347656, "diversity_change_percent": -2.072666443890461, "overall_change_magnitude": 0.0001730340300127864 }, "metrics_2019": { "vegetation_index": 0.3187530040740967, "urban_density": 0.23079785704612732, "feature_diversity": 9.674749374389648, "pixel_count": 846336, "spatial_heterogeneity": 291.449462890625, "change_intensity": 0.3288961946964264 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.36465, 48.845989], [2.360899, 48.84864], [2.35467, 48.850849], [2.35013, 48.851978], [2.34695, 48.853298], [2.344551, 48.854027], [2.345966, 48.855396], [2.346986, 48.856964], [2.347329, 48.857147], [2.350169, 48.86203], [2.353299, 48.86124], [2.35678, 48.860161], [2.358579, 48.858749], [2.36167, 48.857258], [2.364329, 48.856407], [2.36836, 48.855869], [2.3692, 48.85281], [2.366299, 48.846958], [2.36465, 48.845989]]]] } }, { "type": "Feature", "properties": { "name": "Reuilly", "cartodb_id": 12, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:37:20.571Z", "analysis": { "ward_name": "Reuilly", "ward_no": "12", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.29549455642700195, "urban_density": 0.22254928946495056, "change_intensity": 0.3309659957885742, "feature_diversity": 8.260284423828125, "spatial_heterogeneity": 178.23228454589844, "coverage_percent": 14.805825242718445, "pixel_count": 93696, "mean_embedding": 0.0018559362506493926, "std_embedding": 0.3309659957885742 }, "change_metrics": { "vegetation_change": -0.0010331571102142334, "vegetation_change_percent": -0.34841839836483457, "urban_density_change": 0.0004140883684158325, "urban_density_change_percent": 0.18641276410571211, "diversity_change": -0.127044677734375, "diversity_change_percent": -1.514721506643962, "overall_change_magnitude": 0.0003001469885930419 }, "metrics_2019": { "vegetation_index": 0.2965277135372162, "urban_density": 0.22213520109653473, "feature_diversity": 8.3873291015625, "pixel_count": 93696, "spatial_heterogeneity": 178.23228454589844, "change_intensity": 0.3309659957885742 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.414499, 48.846809], [2.41252, 48.836529], [2.409609, 48.83427], [2.41407, 48.833698], [2.42214, 48.83585], [2.420249, 48.840588], [2.419299, 48.84206], [2.419989, 48.84359], [2.42179, 48.844547], [2.42445, 48.841778], [2.438359, 48.840588], [2.43922, 48.844547], [2.44085, 48.84444], [2.44076, 48.845959], [2.4466, 48.845901], [2.44634, 48.84494], [2.455519, 48.844097], [2.46334, 48.842232], [2.46977, 48.836529], [2.46909, 48.834148], [2.465219, 48.831497], [2.46428, 48.827599], [2.466, 48.827259], [2.464789, 48.822968], [2.462559, 48.819458], [2.45887, 48.81715], [2.453889, 48.816978], [2.44857, 48.818157], [2.4375, 48.818439], [2.43733, 48.81963], [2.431919, 48.822628], [2.42763, 48.82415], [2.421959, 48.824211], [2.419729, 48.8241], [2.41733, 48.8246], [2.41107, 48.825001], [2.40669, 48.826981], [2.403509, 48.8293], [2.40111, 48.829689], [2.39562, 48.828049], [2.390719, 48.827198], [2.38858, 48.826469], [2.364539, 48.84613], [2.366429, 48.847031], [2.36918, 48.85313], [2.370379, 48.85313], [2.371544, 48.852417], [2.38017, 48.850368], [2.384459, 48.850079], [2.39596, 48.848328], [2.414499, 48.846809]]]] } }, { "type": "Feature", "properties": { "name": "M\u00e9nilmontant", "cartodb_id": 20, "created_at": "2013-02-26T07:07:16.384Z", "updated_at": "2013-02-26T18:38:05.143Z", "analysis": { "ward_name": "M\u00e9nilmontant", "ward_no": "20", "years_available": ["2019", "2024"], "has_change_analysis": true }, "metrics_2024": { "vegetation_index": 0.3106840252876282, "urban_density": 0.22437481582164764, "change_intensity": 0.3232613205909729, "feature_diversity": 9.74604606628418, "spatial_heterogeneity": 206.5520782470703, "coverage_percent": 59.683098591549296, "pixel_count": 2863872, "mean_embedding": 0.0015640354249626398, "std_embedding": 0.3232613205909729 }, "change_metrics": { "vegetation_change": -0.0023578405380249023, "vegetation_change_percent": -0.7532029403818109, "urban_density_change": -0.0020351558923721313, "urban_density_change_percent": -0.8988808562472472, "diversity_change": 0.2983055114746094, "diversity_change_percent": 3.157427003250536, "overall_change_magnitude": 3.714463673532009e-06 }, "metrics_2019": { "vegetation_index": 0.3130418658256531, "urban_density": 0.22640997171401978, "feature_diversity": 9.44774055480957, "pixel_count": 2863872, "spatial_heterogeneity": 206.5520782470703, "change_intensity": 0.3232613205909729 } }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[2.4133, 48.865269], [2.41414, 48.859051], [2.41398, 48.853809], [2.414675, 48.852573], [2.41527, 48.851028], [2.41441, 48.846802], [2.39904, 48.848099], [2.3993, 48.848789], [2.39835, 48.851261], [2.39441, 48.856522], [2.38965, 48.858471], [2.38737, 48.862961], [2.3835, 48.866169], [2.38319, 48.867142], [2.37682, 48.872231], [2.38497, 48.873959], [2.38651, 48.874691], [2.38789, 48.874531], [2.39037, 48.875542], [2.39529, 48.87521], [2.40221, 48.87595], [2.40858, 48.87785], [2.41097, 48.87431], [2.41338, 48.87109], [2.4133, 48.865269]]]] } }] };
+
+                const relativeBreaks = { "vegetation_index": [0.29549455642700195, 0.3072110712528229, 0.3100687563419342, 0.31270863115787506, 0.3140156865119934], "urban_density": [0.2191406488418579, 0.22307587787508965, 0.2242475301027298, 0.2253311201930046, 0.22705771028995514], "feature_diversity": [8.260284423828125, 9.060637712478638, 9.285045623779297, 9.749396800994873, 10.0875825881958], "change_intensity": [0.3210262358188629, 0.3243994787335396, 0.32582004368305206, 0.32776352763175964, 0.3309659957885742], "spatial_heterogeneity": [178.23228454589844, 212.64105987548828, 231.386474609375, 263.8050003051758, 304.5963134765625] };
+
+                const map = L.map('map', {
+                        scrollWheelZoom: true,
+                        zoomControl: true
+                }).setView([48.8566, 2.3522], 12);
+
+                // Base layers
+                const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                        maxZoom: 19
+                }).addTo(map);
+
+                const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors',
+                        maxZoom: 19,
+                        opacity: 0.5
+                });
+
+                const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                        attribution: '&copy; Esri',
+                        maxZoom: 19
+                });
+
+                let currentMetric = null;  // No default metric selected
+                let wardLayer = null;
+                let labelsLayer = null;
+                let currentOpacity = 0.7;
+
+                // Update domains from calculated relativeBreaks
+                const colorScales = {
+                        'data_availability': {
+                                colors: ['#dc2626', '#fbbf24', '#22c55e'],
+                                breaks: [0, 1, 2],
+                                label: 'Data Availability',
+                                isDiscrete: true,
+                                labels: ['No Data', 'Partial (1 year)', 'Complete (2 years)']
+                        },
+                        'vegetation_change_percent': {
+                                domain: [-15, -5, -1, 0, 1, 5, 15],
+                                range: ['#450a0a', '#991b1b', '#f59e0b', '#f8fafc', '#a3e635', '#14532d', '#064e3b'],
+                                label: 'Vegetation Change (%)'
+                        },
+                        'urban_density_change_percent': {
+                                domain: [-15, -5, -1, 0, 1, 5, 15],
+                                range: ['#064e3b', '#14532d', '#a3e635', '#f8fafc', '#f59e0b', '#991b1b', '#450a0a'],
+                                label: 'Urban Density Change (%)'
+                        },
+                        'diversity_change_percent': {
+                                domain: [-15, -5, -1, 0, 1, 5, 15],
+                                range: ['#450a0a', '#991b1b', '#f59e0b', '#f8fafc', '#a3e635', '#14532d', '#064e3b'],
+                                label: 'Diversity Change (%)'
+                        },
+                        'vegetation_index': {
+                                domain: relativeBreaks.vegetation_index,
+                                range: ['#991b1b', '#f59e0b', '#fbbf24', '#a3e635', '#14532d'],
+                                label: 'Vegetation Index'
+                        },
+                        'urban_density': {
+                                domain: relativeBreaks.urban_density,
+                                range: ['#14532d', '#a3e635', '#fbbf24', '#f59e0b', '#991b1b'],
+                                label: 'Urban Density'
+                        },
+                        'feature_diversity': {
+                                domain: relativeBreaks.feature_diversity,
+                                range: ['#991b1b', '#f59e0b', '#fbbf24', '#a3e635', '#14532d'],
+                                label: 'Feature Diversity'
+                        }
+                };
+
+                // Initialize D3 scales
+                const d3Scales = {};
+                function initScales() {
+                        if (typeof d3 === 'undefined') return;
+                        Object.keys(colorScales).forEach(key => {
+                                const config = colorScales[key];
+                                if (!config.isDiscrete) {
+                                        d3Scales[key] = d3.scaleLinear()
+                                                .domain(config.domain)
+                                                .range(config.range)
+                                                .clamp(true);
+                                }
+                        });
+                }
+
+                // Try initializing immediately (if d3 is loaded) or wait
+                if (typeof d3 !== 'undefined') initScales();
+                else window.addEventListener('load', initScales);
+
+                function getColor(value, metric) {
+                        if (value === null || value === undefined) return '#475569';
+
+                        const config = colorScales[metric];
+                        if (config.isDiscrete) {
+                                for (let i = config.breaks.length - 1; i >= 0; i--) {
+                                        if (value >= config.breaks[i]) {
+                                                return config.colors[i];
+                                        }
+                                }
+                                return config.colors[0];
+                        }
+
+                        // Ensure scales are initialized
+                        if (!d3Scales[metric]) initScales();
+
+                        if (d3Scales[metric]) {
+                                return d3Scales[metric](value);
+                        }
+                        return '#475569';
+                }
+
+                function getMetricValue(properties, metric) {
+                        if (metric === 'data_availability') {
+                                const years = properties.analysis?.years_available || [];
+                                return years.length;
+                        }
+
+                        if (metric.endsWith('_change_percent') || metric === 'diversity_change_percent') {
+                                return properties.change_metrics?.[metric];
+                        }
+
+                        return properties.metrics_2024?.[metric];
+                }
+
+                function updateLegend() {
+                        // If no metric selected, show placeholder
+                        if (!currentMetric) {
+                                document.getElementById('legend').innerHTML = '<div style="color: #94a3b8; font-size: 12px; text-align: center; padding: 12px;">Select a metric to view legend</div>';
+                                return;
+                        }
+
+                        const config = colorScales[currentMetric];
+                        let legendHtml = '';
+
+                        if (config.isDiscrete) {
+                                legendHtml = config.colors.map((color, i) => {
+                                        return `
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: ${color}"></div>
+                            <span>${config.labels[i]}</span>
+                        </div>
+                    `;
+                                }).join('');
+                        } else {
+                                // Continuous Legend with Gradient
+                                // Create gradient stops
+                                const stops = config.range.map((color, i) => {
+                                        const offset = (i / (config.range.length - 1)) * 100;
+                                        return `${color} ${offset}%`;
+                                }).join(', ');
+
+                                const backgroundStyle = `linear-gradient(to right, ${stops})`;
+
+                                const domain = config.domain;
+                                const min = domain[0];
+                                const max = domain[domain.length - 1];
+
+                                legendHtml = `
+                    <div style="margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 13px;">${config.label}</div>
+                    <div style="height: 16px; width: 100%; border-radius: 4px; background: ${backgroundStyle}; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2);"></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8;">
+                        <span>${min}</span>
+                        <span>${(min + max) / 2}</span>
+                        <span>${max}</span>
+                    </div>
+                `;
+                        }
+
+                        document.getElementById('legend').innerHTML = legendHtml;
+                }
+
+                function styleFeature(feature) {
+                        // If no metric selected, show neutral gray
+                        if (!currentMetric) {
+                                return {
+                                        fillColor: '#475569',
+                                        weight: 1,
+                                        opacity: 1,
+                                        color: '#1e293b',
+                                        fillOpacity: currentOpacity
+                                };
+                        }
+
+                        const value = getMetricValue(feature.properties, currentMetric);
+                        return {
+                                fillColor: getColor(value, currentMetric),
+                                weight: 1,
+                                opacity: 1,
+                                color: '#1e293b',
+                                fillOpacity: currentOpacity
+                        };
+                }
+
+                function highlightFeature(e) {
+                        const layer = e.target;
+                        layer.setStyle({
+                                weight: 3,
+                                color: '#60a5fa',
+                                fillOpacity: Math.min(currentOpacity + 0.2, 1)
+                        });
+                        layer.bringToFront();
+
+                        showInfo(layer.feature.properties);
+                }
+
+                function resetHighlight(e) {
+                        wardLayer.resetStyle(e.target);
+                        hideInfo();
+                }
+
+                function showInfo(properties) {
+                        const infoBox = document.getElementById('info-box');
+                        const analysis = properties.analysis;
+
+                        let html = `<div class="info-title">${analysis.ward_name}</div>`;
+                        html += `<div style="margin-bottom: 8px; font-size: 13px; color: #94a3b8;">WARD NO: <span style="color: #e2e8f0; font-weight: 600;">${analysis.ward_no}</span></div>`;
+
+                        if (currentMetric) {
+                                // Data availability status
+                                const dataStatus = analysis.years_available.length === 2 ? 'Complete' : 'Partial';
+                                const statusClass = analysis.years_available.length === 2 ? 'status-complete' : 'status-partial';
+                                html += `<div class="data-status ${statusClass}">${dataStatus}: ${analysis.years_available.join(', ')}</div>`;
+
+                                if (properties.metrics_2024) {
+                                        html += `
+                        <div class="info-metric">
+                            <span class="info-label">Vegetation Index:</span>
+                            <span class="info-value">${properties.metrics_2024.vegetation_index.toFixed(4)}</span>
+                        </div>
+                        <div class="info-metric">
+                            <span class="info-label">Urban Density:</span>
+                            <span class="info-value">${properties.metrics_2024.urban_density.toFixed(4)}</span>
+                        </div>
+                        <div class="info-metric">
+                            <span class="info-label">Feature Diversity:</span>
+                            <span class="info-value">${properties.metrics_2024.feature_diversity.toFixed(2)}</span>
+                        </div>
+                        <div class="info-metric">
+                            <span class="info-label">Pixels Analyzed:</span>
+                            <span class="info-value">${properties.metrics_2024.pixel_count.toLocaleString()}</span>
+                        </div>
+                    `;
+                                }
+
+                                if (properties.change_metrics) {
+                                        html += `
+                        <div class="info-metric">
+                            <span class="info-label">Veg. Change:</span>
+                            <span class="info-value">${properties.change_metrics.vegetation_change_percent >= 0 ? '+' : ''}${properties.change_metrics.vegetation_change_percent.toFixed(2)}%</span>
+                        </div>
+                        <div class="info-metric">
+                            <span class="info-label">Urban Change:</span>
+                            <span class="info-value">${properties.change_metrics.urban_density_change_percent >= 0 ? '+' : ''}${properties.change_metrics.urban_density_change_percent.toFixed(2)}%</span>
+                        </div>
+                        <div class="info-metric">
+                            <span class="info-label">Diversity Change:</span>
+                            <span class="info-value">${properties.change_metrics.diversity_change_percent >= 0 ? '+' : ''}${properties.change_metrics.diversity_change_percent.toFixed(2)}%</span>
+                        </div>
+                    `;
+                                }
+                        } else {
+                                // User wants Change Overview here when no metric is selected
+                                if (properties.change_metrics) {
+                                        html += `<div style="margin-top: 12px; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase;">Change Overview (2019-2024)</div>`;
+
+                                        const formatChange = (val, invert) => {
+                                                const num = parseFloat(val);
+                                                const direction = invert ? -num : num;
+                                                const color = direction > 0 ? '#22c55e' : (direction < 0 ? '#ef4444' : '#94a3b8');
+                                                const sign = num > 0 ? '+' : '';
+                                                return `<span style="color: ${color}; font-weight: 600;">${sign}${num.toFixed(1)}%</span>`;
+                                        };
+
+                                        html += `
+                        <div class="info-metric">
+                            <span class="info-label">Vegetation:</span>
+                            <span class="info-value">${formatChange(properties.change_metrics.vegetation_change_percent, false)}</span>
+                        </div>
+                        <div class="info-metric">
+                            <span class="info-label">Urban Density:</span>
+                            <span class="info-value">${formatChange(properties.change_metrics.urban_density_change_percent, true)}</span>
+                        </div>
+                        <div class="info-metric">
+                            <span class="info-label">Diversity Change:</span>
+                            <span class="info-value">${formatChange(properties.change_metrics.diversity_change_percent, false)}</span>
+                        </div>
+                    `;
+                                }
+                                html += `<div style="margin-top: 12px; font-size: 11px; color: #94a3b8; font-style: italic;">Select a specific metric from the sidebar for detailed maps.</div>`;
+                        }
+
+                        infoBox.innerHTML = html;
+                        infoBox.classList.add('visible');
+                }
+
+                function hideInfo() {
+                        document.getElementById('info-box').classList.remove('visible');
+                }
+
+                function onEachFeature(feature, layer) {
+                        layer.on({
+                                mouseover: highlightFeature,
+                                mouseout: resetHighlight,
+                                click: (e) => {
+                                        const props = e.target.feature.properties;
+                                        const analysis = props.analysis;
+
+                                        // Build context-aware popup based on current metric
+                                        let popupContent = `<div style="min-width: 200px;">`;
+                                        popupContent += `<div style="font-size: 14px; font-weight: 600; color: #60a5fa; margin-bottom: 8px;">${analysis.ward_name}</div>`;
+                                        popupContent += `<div style="font-size: 11px; color: #94a3b8; margin-bottom: 12px;">Ward No: ${analysis.ward_no}</div>`;
+
+                                        // Show metric-specific information
+                                        if (currentMetric === 'vegetation_index' && props.metrics_2024) {
+                                                popupContent += `
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Vegetation Index:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.vegetation_index.toFixed(4)}</span>
+                            </div>
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Coverage:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.coverage_percent.toFixed(1)}%</span>
+                            </div>
+                            <div>
+                                <span style="color: #94a3b8; font-size: 12px;">Pixels:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.pixel_count.toLocaleString()}</span>
+                            </div>
+                        `;
+                                        } else if (currentMetric === 'urban_density' && props.metrics_2024) {
+                                                popupContent += `
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Urban Density:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.urban_density.toFixed(4)}</span>
+                            </div>
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Spatial Heterogeneity:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.spatial_heterogeneity.toFixed(2)}</span>
+                            </div>
+                            <div>
+                                <span style="color: #94a3b8; font-size: 12px;">Pixels:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.pixel_count.toLocaleString()}</span>
+                            </div>
+                        `;
+                                        } else if (currentMetric === 'feature_diversity' && props.metrics_2024) {
+                                                popupContent += `
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Feature Diversity:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.feature_diversity.toFixed(2)}</span>
+                            </div>
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Change Intensity:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.change_intensity.toFixed(4)}</span>
+                            </div>
+                            <div>
+                                <span style="color: #94a3b8; font-size: 12px;">Pixels:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024.pixel_count.toLocaleString()}</span>
+                            </div>
+                        `;
+                                        } else if (currentMetric === 'vegetation_change_percent' && props.change_metrics) {
+                                                popupContent += `
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Vegetation Change:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.change_metrics.vegetation_change_percent >= 0 ? '+' : ''}${props.change_metrics.vegetation_change_percent.toFixed(2)}%</span>
+                            </div>
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">2019 Value:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2019?.vegetation_index.toFixed(4) || 'N/A'}</span>
+                            </div>
+                            <div>
+                                <span style="color: #94a3b8; font-size: 12px;">2024 Value:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024?.vegetation_index.toFixed(4) || 'N/A'}</span>
+                            </div>
+                        `;
+                                        } else if (currentMetric === 'urban_density_change_percent' && props.change_metrics) {
+                                                popupContent += `
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Urban Density Change:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.change_metrics.urban_density_change_percent >= 0 ? '+' : ''}${props.change_metrics.urban_density_change_percent.toFixed(2)}%</span>
+                            </div>
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">2019 Value:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2019?.urban_density.toFixed(4) || 'N/A'}</span>
+                            </div>
+                            <div>
+                                <span style="color: #94a3b8; font-size: 12px;">2024 Value:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024?.urban_density.toFixed(4) || 'N/A'}</span>
+                            </div>
+                        `;
+                                        } else if (currentMetric === 'diversity_change_percent' && props.change_metrics) {
+                                                popupContent += `
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">Diversity Change:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.change_metrics.diversity_change_percent >= 0 ? '+' : ''}${props.change_metrics.diversity_change_percent.toFixed(2)}%</span>
+                            </div>
+                            <div style="margin-bottom: 6px;">
+                                <span style="color: #94a3b8; font-size: 12px;">2019 Value:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2019?.feature_diversity.toFixed(2) || 'N/A'}</span>
+                            </div>
+                            <div>
+                                <span style="color: #94a3b8; font-size: 12px;">2024 Value:</span>
+                                <span style="color: #e2e8f0; font-weight: 600; float: right;">${props.metrics_2024?.feature_diversity.toFixed(2) || 'N/A'}</span>
+                            </div>
+                        `;
+                                        }
+
+                                        popupContent += `</div>`;
+                                        layer.bindPopup(popupContent).openPopup();
+                                }
+                        });
+                }
+
+                function updateBoundaries() {
+                        // Boundaries are always shown, just update the ward layer style
+                        if (wardLayer && document.getElementById('boundaries-toggle').checked) {
+                                wardLayer.setStyle({
+                                        weight: 1,
+                                        opacity: 1,
+                                        color: '#1e293b'
+                                });
+                        } else if (wardLayer) {
+                                wardLayer.setStyle({
+                                        weight: 0,
+                                        opacity: 0
+                                });
+                        }
+                }
+
+                function updateMap() {
+                        if (wardLayer) {
+                                map.removeLayer(wardLayer);
+                        }
+
+                        wardLayer = L.geoJSON(wardsData, {
+                                style: styleFeature,
+                                onEachFeature: onEachFeature
+                        }).addTo(map);
+
+                        updateLegend();
+                        updateBoundaries();
+                }
+
+                // Metric selector
+                document.querySelectorAll('.metric-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                                document.querySelectorAll('.metric-btn').forEach(b => b.classList.remove('active'));
+                                btn.classList.add('active');
+                                currentMetric = btn.dataset.metric;
+                                updateMap();
+                        });
+                });
+
+                // Layer controls
+                document.getElementById('osm-toggle').addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                                map.addLayer(osmLayer);
+                        } else {
+                                map.removeLayer(osmLayer);
+                        }
+                });
+
+                document.getElementById('satellite-toggle').addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                                map.removeLayer(darkLayer);
+                                map.addLayer(satelliteLayer);
+                        } else {
+                                map.removeLayer(satelliteLayer);
+                                map.addLayer(darkLayer);
+                        }
+                });
+
+                document.getElementById('boundaries-toggle').addEventListener('change', updateBoundaries);
+
+                document.getElementById('opacity-slider').addEventListener('input', (e) => {
+                        currentOpacity = e.target.value / 100;
+                        if (wardLayer) {
+                                wardLayer.setStyle({ fillOpacity: currentOpacity });
+                        }
+                });
+
+                // Initial render
+                updateMap();
+        </script>
+</body>
+
+</html>
