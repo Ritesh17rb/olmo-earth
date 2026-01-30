@@ -718,16 +718,41 @@ cd rslearn</pre>
                             <div class="col-md-6">
                                 <h5 class="fw-bold mb-3"><i class="bi bi-box-seam me-2 text-primary"></i>2. Install
                                     Dependencies</h5>
+                                <p class="text-secondary small mb-3">To keep OlmoEarth and rslearn compatible, align
+                                    PyTorch to Version 2.7.1 before installing project libraries.</p>
+                                <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm mb-3">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <div class="fw-bold text-white mb-2">I. Create and Activate Environment</div>
+                                    <pre class="text-white m-0">python3 -m venv venv
+source venv/bin/activate</pre>
+                                </div>
+                                <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm mb-3">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <div class="fw-bold text-white mb-2">II. Core Engine Alignment</div>
+                                    <p class="small text-muted mb-2">Force-install the unified Torch engine (CUDA 12.4).</p>
+                                    <pre class="text-warning small m-0">pip install torch==2.7.1 torchvision==0.22.1 --extra-index-url https://download.pytorch.org/whl/cu124</pre>
+                                </div>
+                                <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm mb-3">
+                                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                                        <i class="bi bi-clipboard"></i>Copy
+                                    </button>
+                                    <div class="fw-bold text-white mb-2">III-a. Install rslearn core</div>
+                                    <p class="small text-white-50 mb-2">Use <code>--no-deps</code> so this doesn’t override
+                                        the Torch version above.</p>
+                                    <pre class="text-white m-0">pip install -e .[extra] --no-deps</pre>
+                                </div>
                                 <div class="code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
                                     <button class="copy-btn" onclick="copyToClipboard(this)">
                                         <i class="bi bi-clipboard"></i>Copy
                                     </button>
-                                    <pre class="text-white m-0">python3 -m venv venv
-source venv/bin/activate
-pip install .[extra]
-
-# Install OlmoEarth module
-pip install git+https://github.com/allenai/olmoearth_pretrain.git</pre>
+                                    <div class="fw-bold text-white mb-2">III-b. Install OlmoEarth module</div>
+                                    <p class="small text-white-50 mb-2">Use <code>--no-deps</code> so this doesn’t override
+                                        the Torch version above.</p>
+                                    <pre class="text-white m-0">pip install git+https://github.com/allenai/olmoearth_pretrain.git --no-deps</pre>
                                 </div>
                             </div>
                         </div>
@@ -757,7 +782,7 @@ pip install git+https://github.com/allenai/olmoearth_pretrain.git</pre>
   "layers": {
     "sentinel2_l2a": {
       "band_sets": [{
-          "bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B8A", "B09", "B11", "B12"],
+          "bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B11", "B12"],
           "dtype": "uint16"
       }],
       "data_source": {
@@ -817,6 +842,13 @@ pip install git+https://github.com/allenai/olmoearth_pretrain.git</pre>
                                 <p class="text-secondary">Place your ward boundary file (e.g.,
                                     <code>kanpur.geojson</code>) in the root directory.
                                 </p>
+                                <a href="assets/maps/kanpur.geojson" class="resource-link mt-3" download>
+                                    <i class="bi bi-download"></i>
+                                    <div>
+                                        <div class="fw-semibold">Download sample GeoJSON</div>
+                                        <small class="text-muted">Kanpur ward boundaries (kanpur.geojson)</small>
+                                    </div>
+                                </a>
                                 <div
                                     class="feature-item p-3 rounded bg-body-secondary border d-flex gap-3 align-items-start mt-4">
                                     <i class="bi bi-info-circle-fill text-primary"></i>
@@ -855,7 +887,6 @@ time_ranges = [
     ("2024-01-01T00:00:00+00:00", "2024-02-01T00:00:00+00:00", "2024")
 ]
 
-# Load GeoJSON
 try:
     with open(geojson_path, 'r') as f:
         data = json.load(f)
@@ -863,25 +894,14 @@ except FileNotFoundError:
     print(f"ERROR: Could not find file '{geojson_path}'")
     sys.exit(1)
 
-# AUTO-DETECT CRS
-first_geom = shapely.geometry.shape(data['features'][0]['geometry'])
-min_x, min_y, max_x, max_y = first_geom.bounds
-
-if -180 <= min_x <= 180 and -90 <= min_y <= 90:
-    input_crs = "EPSG:4326"
-else:
-    input_crs = "EPSG:3857"
-
-print(f"Processing {len(data['features'])} features...\n")
+print(f"Processing {len(data['features'])} features...")
 
 for i, feature in enumerate(data['features']):
     geom = shapely.geometry.shape(feature['geometry'])
-    bounds = geom.bounds 
+    bounds = geom.bounds # (minx, miny, maxx, maxy)
     
-    if input_crs == "EPSG:4326" and bounds[1] > 90: 
-         box_str = f"{bounds[1]},{bounds[0]},{bounds[3]},{bounds[2]}"
-    else:
-         box_str = f"{bounds[0]},{bounds[1]},{bounds[2]},{bounds[3]}"
+    # rslearn expects: minx,miny,maxx,maxy for --box
+    box_str = f"{bounds[0]},{bounds[1]},{bounds[2]},{bounds[3]}"
 
     for start, end, suffix in time_ranges:
         window_name = f"region_{i}_{suffix}"
@@ -894,14 +914,14 @@ for i, feature in enumerate(data['features']):
             "--box", box_str,
             "--start", start,
             "--end", end,
-            "--src_crs", input_crs,
+            "--src_crs", "EPSG:4326",
             "--utm",
             "--resolution", "10"
         ]
         subprocess.run(cmd, check=True, capture_output=True)
         print(".", end="", flush=True)
 
-print("\nDone! Windows created.")</pre>
+print("\nDone! Windows created. Now run Prepare -> Ingest -> Materialize.")</pre>
                             </div>
                             <div class="mt-3 code-block-wrapper bg-dark p-4 rounded border border-secondary shadow-sm">
                                 <button class="copy-btn" onclick="copyToClipboard(this)">
@@ -938,6 +958,18 @@ print("\nDone! Windows created.")</pre>
                                         </p>
                                         <pre
                                             class="text-warning small m-0">rslearn dataset ingest --root dataset --workers 4 --no-use-initial-job</pre>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="code-block-wrapper p-4 rounded bg-dark border border-secondary h-100">
+                                        <button class="copy-btn" onclick="copyToClipboard(this)">
+                                            <i class="bi bi-clipboard"></i>Copy
+                                        </button>
+                                        <div class="fw-bold text-white mb-2">III. Materialize (Create the actual patches)</div>
+                                        <p class="small text-muted mb-2">Crops and mosaics the ingested tiles into the
+                                            windows defined in Step 5.</p>
+                                        <pre
+                                            class="text-warning small m-0">rslearn dataset materialize --root dataset --workers 4 --no-use-initial-job</pre>
                                     </div>
                                 </div>
                             </div>
@@ -980,7 +1012,8 @@ data:
       sentinel2_l2a:
         data_type: "raster"
         layers: ["sentinel2_l2a"]
-        bands: ["B02", "B03", "B04", "B08", "B05", "B06", "B07", "B8A", "B11", "B12", "B01", "B09"]
+        # Ensure B08 and B8A are both here
+        bands: ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B11", "B12"]
         passthrough: true
         dtype: FLOAT32
         load_all_layers: true
@@ -1000,7 +1033,7 @@ data:
         - class_path: rslearn.models.olmoearth_pretrain.norm.OlmoEarthNormalize
           init_args:
             band_names:
-              sentinel2_l2a: ["B02", "B03", "B04", "B08", "B05", "B06", "B07", "B8A", "B11", "B12", "B01", "B09"]
+              sentinel2_l2a: ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B11", "B12"]
               sentinel1: ["vv", "vh"]
       load_all_patches: true
       patch_size: 64
@@ -1048,6 +1081,7 @@ import rasterio
 from pathlib import Path
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 import tqdm
 
 # Configuration
@@ -1056,6 +1090,12 @@ WINDOWS_PATH = DATASET_PATH / "windows" / "default"
 GEOJSON_PATH = Path("kanpur.geojson")
 OUTPUT_PATH = Path("analysis_results")
 OUTPUT_PATH.mkdir(exist_ok=True)
+PCA_PREVIEW_DIR = OUTPUT_PATH / "pca_components"
+
+# Calibrate these after inspecting the PCA previews or correlating with NDVI.
+VEG_COMPONENT = 0
+URBAN_COMPONENT = 1
+CALIBRATION_SAMPLE_COUNT = 3
 
 def get_ward_mapping():
     try:
@@ -1098,11 +1138,22 @@ def fit_global_model(windows_path):
     pca = PCA(n_components=4).fit(X_scaled)
     return scaler, pca
 
+def save_component_pngs(components, out_dir, window_name, max_components=4):
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for i in range(min(components.shape[0], max_components)):
+        plt.figure(figsize=(4, 4))
+        plt.imshow(components[i], cmap="viridis")
+        plt.axis("off")
+        plt.tight_layout()
+        plt.savefig(out_dir / f"{window_name}_pc{i+1}.png", dpi=150)
+        plt.close()
+
 def main():
     ward_mapping = get_ward_mapping()
     scaler, pca = fit_global_model(WINDOWS_PATH)
     windows = sorted([w for w in WINDOWS_PATH.iterdir() if w.is_dir()])
     results = {}
+    saved_previews = 0
     for window_path in tqdm.tqdm(windows, desc="Analyzing"):
         window_name = window_path.name
         idx = int(window_name.split('_')[1])
@@ -1112,11 +1163,14 @@ def main():
         C, H, W = embedding.shape
         pixels = embedding.reshape(C, -1).T
         components = pca.transform(scaler.transform(pixels)).T.reshape(4, H, W)
+        if saved_previews < CALIBRATION_SAMPLE_COUNT:
+            save_component_pngs(components, PCA_PREVIEW_DIR, window_name)
+            saved_previews += 1
         results[window_name] = {
             'ward_name': ward_name,
             'metrics': {
-                'vegetation_mean': float(np.mean(components[0])),
-                'urban_density_mean': float(np.mean(components[1])),
+                'vegetation_mean': float(np.mean(components[VEG_COMPONENT])),
+                'urban_density_mean': float(np.mean(components[URBAN_COMPONENT])),
             }
         }
     
@@ -1310,7 +1364,12 @@ if __name__ == "__main__":
 
         // Copy to Clipboard Function - Fixed to support multi-line pre/code
         function copyToClipboard(button) {
-            const codeBlock = button.parentElement.querySelector('pre, code');
+            const parent = button.parentElement;
+            const codeBlock = parent.querySelector('pre') || parent.querySelector('code');
+            if (!codeBlock) {
+                console.error('No code block found to copy.');
+                return;
+            }
             // Get all text and remove extra leading/trailing whitespace
             const text = codeBlock.innerText.trim();
 
