@@ -1,41 +1,56 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OlmoEarth - Grid Matrix Analysis</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* Navbar overrides to match root style */
+        .navbar-brand {
+            font-weight: 600;
+        }
+
+        .nav-link.active {
+            font-weight: 500;
+        }
+    </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom" data-bs-theme="dark">
-        <div class="container-fluid"><a class="navbar-brand d-flex align-items-center gap-2" href="../index.html"><i
-                    class="bi bi-globe-americas text-primary"></i>OlmoEarth </a><button class="navbar-toggler"
-                type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
-                    class="navbar-toggler-icon"></span></button>
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
+                <i class="bi bi-globe-americas text-primary"></i>OlmoEarth
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Matrix Analysis</a>
+                        <a class="nav-link active" href="#">Matrix Analysis</a>
                     </li>
                 </ul>
 
-                <div class="nav-item dropdown ms-auto" role="group" aria-label="Toggle dark mode"
-                    title="Toggle Dark Mode"><button class="dark-theme-toggle btn btn-outline-light dropdown-toggle"
-                        type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                        aria-label="Toggle theme (light)"><i class="bi bi-circle-half"></i><span
-                            class="d-lg-none ms-2">Toggle theme</span></button>
+                <div class="nav-item dropdown ms-auto">
+                    <button class="dark-theme-toggle btn btn-outline-secondary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown">
+                        <i class="bi bi-circle-half"></i><span class="d-lg-none ms-2">Toggle theme</span>
+                    </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><button class="dropdown-item" data-bs-theme-value="light" aria-pressed="false"><i
+                        <li><button class="dropdown-item" data-bs-theme-value="light"><i
                                     class="me-2 bi bi-sun-fill"></i>Light</button></li>
-                        <li><button class="dropdown-item active" data-bs-theme-value="dark" aria-pressed="true"><i
+                        <li><button class="dropdown-item" data-bs-theme-value="dark"><i
                                     class="me-2 bi bi-moon-stars-fill"></i>Dark</button></li>
-                        <li><button class="dropdown-item" data-bs-theme-value="auto" aria-pressed="false"><i
+                        <li><button class="dropdown-item" data-bs-theme-value="auto"><i
                                     class="me-2 bi bi-circle-half"></i>Auto</button></li>
                     </ul>
                 </div>
@@ -62,12 +77,10 @@
                 <label class="section-label">Primary Dataset</label>
                 <div style="display: flex; gap: 0.5rem;">
                     <select id="city-select-1" class="feature-toggle select-input" style="flex: 2;">
-                        <option value="london">London</option>
-                        <option value="paris">Paris</option>
-                        <option value="delhi">Delhi</option>
                         <option value="bangalore">Bangalore</option>
-                        <option value="chennai">Chennai</option>
-                        <option value="mumbai">Mumbai</option>
+                        <option value="delhi">Delhi</option>
+                        <option value="paris">Paris</option>
+                        <option value="mariupol">Mariupol</option>
                     </select>
                     <select id="year-select-1" class="feature-toggle select-input" style="flex: 1;">
                         <option value="2024">2024</option>
@@ -81,28 +94,17 @@
                 <label class="section-label" style="color: var(--accent-color);">Comparison Dataset</label>
                 <div style="display: flex; gap: 0.5rem;">
                     <select id="city-select-2" class="feature-toggle select-input" style="flex: 2;">
-                        <option value="london">London</option>
-                        <option value="paris">Paris</option>
-                        <option value="delhi">Delhi</option>
                         <option value="bangalore" selected>Bangalore</option>
-                        <option value="chennai">Chennai</option>
-                        <option value="mumbai">Mumbai</option>
+                        <option value="delhi">Delhi</option>
+                        <option value="paris">Paris</option>
+                        <option value="mariupol">Mariupol</option>
                     </select>
                     <select id="year-select-2" class="feature-toggle select-input" style="flex: 1;">
                         <option value="2024">2024</option>
                         <option value="2019" selected>2019</option>
                     </select>
                 </div>
-                <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <button id="animate-btn" class="feature-toggle"
-                        style="flex: 1; justify-content: center; font-size: 0.8rem;">
-                        <i class="bi bi-play-circle"></i> Animate
-                    </button>
-                    <button id="velocity-btn" class="feature-toggle"
-                        style="flex: 1; justify-content: center; font-size: 0.8rem;" title="Show Difference">
-                        <i class="bi bi-activity"></i> Delta
-                    </button>
-                </div>
+                <!-- Removed animation controls as they were grid-specific -->
             </div>
 
             <div class="panel-section">
@@ -112,58 +114,56 @@
                 </div>
 
                 <div id="feature-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <div class="feature-toggle selected" data-feature="vegetation_index">
-                        <i class="bi bi-tree-fill icon"></i>
-                        <span>Vegetation Index</span>
+                    <!-- Feature List -->
+                    <div class="feature-toggle" data-feature="vegetation_index">
+                        <i class="bi bi-tree-fill" style="color: #22c55e;"></i> Vegetation Index (NDVI)
                     </div>
-                    <div class="feature-toggle selected" data-feature="urban_density">
-                        <i class="bi bi-buildings-fill icon"></i>
-                        <span>Urban Density</span>
+                    <div class="feature-toggle" data-feature="urban_density">
+                        <i class="bi bi-building-fill" style="color: #3b82f6;"></i> Urban Density
                     </div>
-                    <div class="feature-toggle" data-feature="correlation_distance">
-                        <i class="bi bi-diagram-3-fill icon"></i>
-                        <span>Correlation Distance</span>
+                    <div class="feature-toggle" data-feature="spatial_heterogeneity">
+                        <i class="bi bi-grid-3x3" style="color: #a855f7;"></i> Urban Texture
+                    </div>
+                    <div class="feature-toggle" data-feature="uhi_risk_index">
+                        <i class="bi bi-thermometer-high" style="color: #ef4444;"></i> Urban Heat Risk
+                    </div>
+                    <div class="feature-toggle" data-feature="modified_water_index">
+                        <i class="bi bi-droplet-fill" style="color: #06b6d4;"></i> Water Bodies (MNDWI)
+                    </div>
+                    <div class="feature-toggle" data-feature="bare_soil_index">
+                        <i class="bi bi-square-fill" style="color: #d97706;"></i> Bare Soil Index
+                    </div>
+                    <div class="feature-toggle" data-feature="normalized_burn_ratio">
+                        <i class="bi bi-activity" style="color: #10b981;"></i> Land Health (NBR)
+                    </div>
+                    <div class="feature-toggle" data-feature="index_based_built_up_index">
+                        <i class="bi bi-bricks" style="color: #f97316;"></i> True Built-up (IBI)
+                    </div>
+                    <div class="feature-toggle" data-feature="red_edge_index">
+                        <i class="bi bi-flower1" style="color: #84cc16;"></i> Dense Veg (NDRE)
+                    </div>
+                    <div class="feature-toggle" data-feature="surface_albedo">
+                        <i class="bi bi-sun-fill" style="color: #eab308;"></i> Surface Albedo
+                    </div>
+                    <div class="feature-toggle" data-feature="built_up_texture">
+                        <i class="bi bi-house-door-fill" style="color: #6366f1;"></i> Built-up Texture
                     </div>
                 </div>
             </div>
 
-            <div class="panel-section" style="margin-top: auto;">
-                <button id="run-correlation-btn" class="feature-toggle"
-                    style="justify-content: center; background: var(--accent-color); border-color: var(--accent-color);">
-                    <i class="bi bi-play-fill" style="color: white;"></i>
-                    <span style="color: white; font-weight: 600;">Run Grid Search</span>
-                </button>
-            </div>
+
         </aside>
 
         <!-- Main Content -->
         <main class="matrix-container">
-            <div class="view-tabs">
-                <div class="view-tab active" data-view="grid">Spatial Grid</div>
-                <div class="view-tab" data-view="matrix">Correlation Matrix</div>
-            </div>
+            <!-- Tabs removed -->
 
-            <div id="grid-view" style="width: 100%; height: 100%; position: relative;">
-                <canvas id="matrix-canvas"></canvas>
-                <div id="legend"
-                    style="position: absolute; bottom: 20px; right: 20px; background: var(--card-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--card-border);">
-                    <div style="font-size: 0.8rem; margin-bottom: 5px; color: var(--text-muted);">Primary Feature
-                        Intensity</div>
-                    <div
-                        style="width: 150px; height: 10px; background: linear-gradient(to right, var(--canvas-bg), var(--accent-color)); border-radius: 5px;">
-                    </div>
-                    <div
-                        style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-top: 3px;">
-                        <span>Low</span>
-                        <span>High</span>
-                    </div>
-                </div>
-            </div>
+            <!-- Grid View Removed -->
 
-            <div id="matrix-view" style="display: none; width: 100%; height: 100%; overflow: auto;">
+            <div id="matrix-view" style="display: block; width: 100%; height: 100%; overflow: auto;">
                 <h3 style="margin-top: 0;">Feature Correlation Matrix</h3>
                 <p style="color: var(--secondary-color); font-size: 0.9rem;">Pearson correlation coefficients between
-                    selected features across all 10,000 grid cells.</p>
+                    selected features based on valid grid cells.</p>
                 <div id="correlation-heatmap" style="display: grid; gap: 2px; margin-top: 2rem;">
                     <!-- Injected via JS -->
                 </div>
@@ -171,7 +171,7 @@
 
             <div id="loading-overlay" class="loading-overlay">
                 <div class="spinner"></div>
-                <div style="margin-top: 1rem; font-weight: 500;">Loading Grid Data...</div>
+                <div style="margin-top: 1rem; font-weight: 500;">Loading Data...</div>
             </div>
 
             <div id="tooltip" class="tooltip"></div>
@@ -179,68 +179,6 @@
     </div>
 
     <script src="app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        (() => {
-            'use strict'
-
-            const getStoredTheme = () => localStorage.getItem('theme')
-            const setStoredTheme = theme => localStorage.setItem('theme', theme)
-            const getPreferredTheme = () => {
-                const storedTheme = getStoredTheme()
-                if (storedTheme) {
-                    return storedTheme
-                }
-
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-            }
-
-            const setTheme = theme => {
-                if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.setAttribute('data-bs-theme', 'dark')
-                } else {
-                    document.documentElement.setAttribute('data-bs-theme', theme)
-                }
-            }
-
-            setTheme(getPreferredTheme())
-
-            const showActiveTheme = (theme, focus = false) => {
-                const themeSwitcher = document.querySelector('.dark-theme-toggle')
-                if (!themeSwitcher) return
-                const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
-                document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
-                    element.classList.remove('active')
-                    element.setAttribute('aria-pressed', 'false')
-                })
-                btnToActive.classList.add('active')
-                btnToActive.setAttribute('aria-pressed', 'true')
-
-                const iconClass = theme === 'dark' ? 'bi-moon-stars-fill' : (theme === 'auto' ? 'bi-circle-half' : 'bi-sun-fill');
-                themeSwitcher.innerHTML = `<i class="${iconClass}"></i><span class="d-lg-none ms-2">Toggle theme</span>`;
-            }
-
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                const storedTheme = getStoredTheme()
-                if (storedTheme !== 'light' && storedTheme !== 'dark') {
-                    setTheme(getPreferredTheme())
-                }
-            })
-
-            window.addEventListener('DOMContentLoaded', () => {
-                showActiveTheme(getPreferredTheme())
-
-                document.querySelectorAll('[data-bs-theme-value]').forEach(toggle => {
-                    toggle.addEventListener('click', () => {
-                        const theme = toggle.getAttribute('data-bs-theme-value')
-                        setStoredTheme(theme)
-                        setTheme(theme)
-                        showActiveTheme(theme, true)
-                    })
-                })
-            })
-        })()
-    </script>
 </body>
 
 </html>

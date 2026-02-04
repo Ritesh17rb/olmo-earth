@@ -1,49 +1,23 @@
 :root {
     --bg-color: #0f172a;
     --text-color: #f8fafc;
-    --text-muted: #94a3b8;
     --card-bg: rgba(30, 41, 59, 0.7);
+    --card-solid: #1e293b;
     --card-border: rgba(148, 163, 184, 0.1);
     --accent-color: #3b82f6;
     --accent-glow: rgba(59, 130, 246, 0.5);
     --secondary-color: #64748b;
     --success-color: #10b981;
     --danger-color: #ef4444;
-    --input-bg: #1e293b;
-    --toggle-bg: rgba(0, 0, 0, 0.2);
-    --hover-bg: rgba(255, 255, 255, 0.05);
-    --canvas-bg: #0f172a;
-    --canvas-text: #fff;
-    --divider-color: #fff;
-    --btn-animate-color: #34d399;
-    --btn-animate-bg: rgba(16, 185, 129, 0.1);
-    --btn-animate-border: rgba(16, 185, 129, 0.4);
-    --btn-delta-color: #fb923c;
-    --btn-delta-bg: rgba(249, 115, 22, 0.1);
-    --btn-delta-border: rgba(249, 115, 22, 0.4);
 }
 
 [data-bs-theme="light"] {
-    --bg-color: #f8f9fa;
-    --text-color: #212529;
-    --text-muted: #6c757d;
-    --card-bg: #ffffff;
-    --card-border: #dee2e6;
-    --secondary-color: #6c757d;
-    --input-bg: #ffffff;
-    --toggle-bg: #e9ecef;
-    --hover-bg: #f8f9fa;
-    --canvas-bg: #f8f9fa;
-    --canvas-text: #212529;
-    --divider-color: #dee2e6;
-    --btn-animate-color: #059669;
-    /* darker green for light mode */
-    --btn-animate-bg: rgba(16, 185, 129, 0.15);
-    --btn-animate-border: rgba(16, 185, 129, 0.5);
-    --btn-delta-color: #ea580c;
-    /* darker orange for light mode */
-    --btn-delta-bg: rgba(249, 115, 22, 0.15);
-    --btn-delta-border: rgba(249, 115, 22, 0.5);
+    --bg-color: #f8fafc;
+    --text-color: #0f172a;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-solid: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.1);
+    --secondary-color: #475569;
 }
 
 body {
@@ -58,16 +32,66 @@ body {
 
 .select-input {
     color: var(--text-color);
-    background: var(--input-bg);
+    background: var(--card-bg);
     border: 1px solid var(--card-border);
 }
 
-option {
-    background-color: var(--input-bg);
+.select-input option {
+    background-color: var(--card-solid);
     color: var(--text-color);
 }
 
-/* Obsolete navbar styles removed to fix Bootstrap conflict */
+.matrix-navbar {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 1rem 1.5rem;
+}
+
+.nav-content {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand i {
+    color: var(--accent-color);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
 
 .main-container {
     flex: 1;
@@ -128,7 +152,7 @@ option {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    background: var(--toggle-bg);
+    background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--card-border);
     border-radius: 0.5rem;
     cursor: pointer;
@@ -159,25 +183,27 @@ button.feature-toggle i {
 }
 
 #animate-btn {
-    background: var(--btn-animate-bg);
-    border-color: var(--btn-animate-border);
-    color: var(--btn-animate-color);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #34d399;
 }
 
 #animate-btn:hover {
-    background: var(--btn-animate-border);
-    color: var(--text-color);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.3));
+    border-color: #10b981;
+    color: #fff;
 }
 
 #velocity-btn {
-    background: var(--btn-delta-bg);
-    border-color: var(--btn-delta-border);
-    color: var(--btn-delta-color);
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.2));
+    border-color: rgba(249, 115, 22, 0.4);
+    color: #fb923c;
 }
 
 #velocity-btn:hover {
-    background: var(--btn-delta-border);
-    color: var(--text-color);
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.3));
+    border-color: #f97316;
+    color: #fff;
 }
 
 .feature-toggle:hover {
@@ -185,21 +211,13 @@ button.feature-toggle i {
     background: rgba(59, 130, 246, 0.05);
 }
 
-.feature-toggle.selected {
+/* Active state for feature toggle */
+.feature-toggle.active {
     border-color: var(--accent-color);
     background: rgba(59, 130, 246, 0.1);
 }
 
-.feature-toggle .icon {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--secondary-color);
-}
-
-.feature-toggle.selected .icon {
+.feature-toggle.active .icon {
     color: var(--accent-color);
 }
 
@@ -219,7 +237,7 @@ button.feature-toggle i {
 #matrix-canvas {
     width: 100%;
     height: 100%;
-    background: var(--canvas-bg);
+    background: #000;
     border-radius: 0.5rem;
     cursor: crosshair;
 }
@@ -260,7 +278,7 @@ button.feature-toggle i {
 }
 
 .corr-card {
-    background: var(--card-bg);
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--card-border);
     padding: 1rem;
     border-radius: 0.5rem;
@@ -308,7 +326,7 @@ button.feature-toggle i {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
-    background: var(--toggle-bg);
+    background: rgba(0, 0, 0, 0.2);
     padding: 0.25rem;
     border-radius: 0.5rem;
     width: fit-content;
@@ -327,5 +345,3 @@ button.feature-toggle i {
     background: var(--accent-color);
     color: white;
 }
-
-/* Light mode overrides handled in :root block */
