@@ -1,13 +1,3 @@
-const state = {
-    primaryData: null,
-    secondaryData: null,
-    mode: 'single', // 'single' | 'compare'
-    selectedFeatures: new Set(),
-    activeView: 'matrix',
-    simulatedFeaturesPrimary: {},
-    simulatedFeaturesSecondary: {}
-};
-
 const FEATURES = {
     vegetation_index: { label: 'Vegetation (NDVI)', color: [34, 197, 94] },
     urban_density: { label: 'Urban Density', color: [59, 130, 246] },
@@ -22,6 +12,12 @@ const FEATURES = {
     built_up_texture: { label: 'Built Texture', color: [99, 102, 241] }
 };
 
+const state = {
+    primaryData: null,
+    selectedFeatures: new Set(Object.keys(FEATURES)),
+    simulatedFeaturesPrimary: {}
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     init();
 });
@@ -30,41 +26,14 @@ async function init() {
     setupEventListeners();
     setupTheme();
 
-    // Default load Bangalore 2024 as Primary
-    await loadDataset(1, 'bangalore', '2024');
+    // Default load Bangalore 2024
+    await loadDataset('bangalore', '2024');
 }
 
-
 function setupEventListeners() {
-    // Mode Switching
-    document.querySelectorAll('.view-tab[data-mode]').forEach(el => {
-        el.addEventListener('click', () => {
-            const mode = el.dataset.mode;
-            setMode(mode);
-        });
-    });
-
     // Dataset Selectors
     document.getElementById('city-select-1').addEventListener('change', refreshPrimary);
     document.getElementById('year-select-1').addEventListener('change', refreshPrimary);
-
-    document.getElementById('city-select-2').addEventListener('change', refreshSecondary);
-    document.getElementById('year-select-2').addEventListener('change', refreshSecondary);
-
-    // Feature Toggles
-    document.querySelectorAll('.feature-toggle[data-feature]').forEach(el => {
-        el.addEventListener('click', () => {
-            const feature = el.dataset.feature;
-            if (state.selectedFeatures.has(feature)) {
-                state.selectedFeatures.delete(feature);
-                el.classList.remove('active');
-            } else {
-                state.selectedFeatures.add(feature);
-                el.classList.add('active');
-            }
-            render();
-        });
-    });
 }
 
 function setupTheme() {
@@ -113,53 +82,24 @@ function setupTheme() {
     });
 }
 
-function setMode(mode) {
-    state.mode = mode;
-    document.querySelectorAll('.view-tab[data-mode]').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.view-tab[data-mode="${mode}"]`).classList.add('active');
-
-    const secSelector = document.getElementById('selector-secondary');
-
-    if (mode === 'compare') {
-        secSelector.style.display = 'block';
-        if (!state.secondaryData) {
-            refreshSecondary();
-        } else {
-            render();
-        }
-    } else {
-        secSelector.style.display = 'none';
-        render();
-    }
-}
-
 function refreshPrimary() {
     const city = document.getElementById('city-select-1').value;
     const year = document.getElementById('year-select-1').value;
-    loadDataset(1, city, year);
+    loadDataset(city, year);
 }
 
-function refreshSecondary() {
-    const city = document.getElementById('city-select-2').value;
-    const year = document.getElementById('year-select-2').value;
-    loadDataset(2, city, year);
-}
-
-async function loadDataset(slot, city, year) {
+async function loadDataset(city, year) {
     const loader = document.getElementById('loading-overlay');
-    if (slot === 1 || state.mode === 'compare') loader.style.display = 'flex';
+    loader.style.display = 'flex';
 
     let data = null;
-    // Prefer detailed analysis for matrix view to get all metrics
     let url = `data/${city}_detailed_analysis.json`;
-    let usedDetailed = true;
 
     try {
         let response = await fetch(url);
 
         if (!response.ok) {
-            // Fallback to Grid Analysis if Detailed is missing
-            usedDetailed = false;
+            // Fallback
             url = `data/${city}_grid_analysis_${year}.json`;
             response = await fetch(url);
             if (!response.ok) throw new Error(`Status ${response.status}`);
@@ -167,7 +107,7 @@ async function loadDataset(slot, city, year) {
 
         data = await response.json();
 
-        // Handle GeoJSON (FeatureCollection) format - Common in detailed_analysis.json
+        // Handle GeoJSON
         if (data.type === 'FeatureCollection') {
             data.cells = data.features.map(f => {
                 const props = f.properties;
@@ -179,10 +119,8 @@ async function loadDataset(slot, city, year) {
                 };
             });
         }
-        // Handle Legacy Wards format
         else if (!data.cells && data.wards) {
             data.cells = data.wards.map(w => {
-                // If wards have keys like 'metrics_2024', flatten them
                 const metricsKey = `metrics_${year}`;
                 if (w[metricsKey]) {
                     return { ...w[metricsKey], cell_id: w.ward_id };
@@ -192,23 +130,13 @@ async function loadDataset(slot, city, year) {
         }
 
         // Process Features
-        const feats = extractFeatures(data, year);
-
-        if (slot === 1) {
-            state.primaryData = data;
-            state.simulatedFeaturesPrimary = feats;
-        } else {
-            state.secondaryData = data;
-            state.simulatedFeaturesSecondary = feats;
-        }
+        state.simulatedFeaturesPrimary = extractFeatures(data, year);
+        state.primaryData = data;
 
         render();
     } catch (e) {
         console.error(e);
-        if (slot === 1) {
-            loader.innerHTML = `<div style="color:red">Failed to load ${city}</div>`;
-            return;
-        }
+        loader.innerHTML = `<div style="color:red">Failed to load ${city}</div>`;
     } finally {
         loader.style.display = 'none';
     }
@@ -226,7 +154,6 @@ function extractFeatures(data, year) {
             if (cell[key] !== undefined && cell[key] !== null) {
                 feats[cellId][key] = cell[key];
             } else {
-                // Set to null to indicate missing data for this feature
                 feats[cellId][key] = null;
             }
         });
@@ -244,14 +171,9 @@ function renderMatrix() {
     const el = document.getElementById('correlation-heatmap');
     if (!el) return;
 
-    if (state.selectedFeatures.size === 0) {
-        el.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--secondary-color);">Select features from the sidebar to visualize the correlation matrix.</div>';
-        el.style.display = 'block';
-        return;
-    } else {
-        el.style.display = 'grid';
-    }
+    el.style.display = 'grid';
 
+    // Always show all features
     const feats = Array.from(state.selectedFeatures);
     el.style.gridTemplateColumns = `auto repeat(${feats.length}, 1fr)`;
 
@@ -261,94 +183,51 @@ function renderMatrix() {
     const name1 = `${c1.options[c1.selectedIndex].text} ${y1.value}`;
 
     let infoText = `Analyzing: <span style="color:var(--text-color);font-weight:600">${name1}</span>`;
-
-    if (state.mode === 'compare') {
-        const c2 = document.getElementById('city-select-2');
-        const y2 = document.getElementById('year-select-2');
-        const name2 = `${c2.options[c2.selectedIndex].text} ${y2.value}`;
-        infoText = `
-            <div style="display:flex;justify-content:center;gap:2rem;font-size:0.9rem;padding-bottom:1rem;width:100%;">
-                <div style="display:flex;align-items:center;gap:0.5rem;">
-                    <div style="width:12px;height:12px;background:rgba(34, 197, 94, 0.8);border:1px solid rgba(255,255,255,0.1);"></div>
-                    <span>Upper ◣ : <b>${name1}</b></span>
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem;">
-                    <div style="width:12px;height:12px;background:rgba(239, 68, 68, 0.8);border:1px solid rgba(255,255,255,0.1);"></div>
-                    <span>Lower ◢ : <b>${name2}</b></span>
-                </div>
-            </div>
-        `;
-    } else {
-        infoText = `<div style="text-align:center;padding-bottom:1rem;font-size:0.95rem;">${infoText}</div>`;
-    }
+    infoText = `<div style="text-align:center;padding-bottom:1rem;font-size:0.95rem;">${infoText}</div>`;
 
     let html = `<div style="grid-column: 1 / -1; color:var(--secondary-color);">${infoText}</div>`;
 
     html += `<div></div>` + feats.map(f => `<div style="text-align:center;color:var(--secondary-color);font-size:0.8rem;padding:0.5rem">${FEATURES[f].label}</div>`).join('');
 
-    feats.forEach((rowF, rowIndex) => {
+    feats.forEach(rowF => {
         html += `<div style="text-align:right;color:var(--secondary-color);font-size:0.8rem;padding:0.5rem">${FEATURES[rowF].label}</div>`;
-        feats.forEach((colF, colIndex) => {
-            let corr;
-            let slot = 1;
-            let tooltip = '';
-
-            if (state.mode === 'compare') {
-                if (rowIndex < colIndex) {
-                    // Upper Triangle (Primary)
-                    slot = 1;
-                    corr = calculateCorrelation(rowF, colF, 1);
-                    tooltip = "Primary Data (Upper Triangle)";
-                } else if (rowIndex > colIndex) {
-                    // Lower Triangle (Secondary)
-                    slot = 2;
-                    corr = calculateCorrelation(rowF, colF, 2);
-                    tooltip = "Secondary Data (Lower Triangle)";
-                } else {
-                    // Diagonal
-                    corr = 1.0;
-                    tooltip = "Identity";
-                }
-            } else {
-                // Single Mode
-                corr = calculateCorrelation(rowF, colF, 1);
-            }
+        feats.forEach(colF => {
+            const corr = calculateCorrelation(rowF, colF);
 
             // Color Logic
             let color;
             let displayVal;
 
             if (isNaN(corr)) {
-                color = 'var(--card-bg)'; // Neutral/NA color
+                color = 'var(--card-bg)';
                 displayVal = '-';
             } else {
                 displayVal = corr.toFixed(2);
+                const intensity = Math.abs(corr);
+
+                // Industry Standard: Red (Negative) and Blue (Positive)
                 if (corr >= 0) {
-                    const p = corr;
-                    color = `rgb(${Math.round(30 + (6 - 30) * p)}, ${Math.round(41 + (182 - 41) * p)}, ${Math.round(59 + (212 - 59) * p)})`;
+                    // Blue (Positive)
+                    color = `rgba(59, 130, 246, ${Math.max(0.1, intensity)})`;
                 } else {
-                    const p = 1 + corr; // Map -1..0 to 0..1
-                    color = `rgb(${Math.round(236 + (30 - 236) * p)}, ${Math.round(72 + (41 - 72) * p)}, ${Math.round(153 + (59 - 153) * p)})`;
+                    // Red (Negative)
+                    color = `rgba(239, 68, 68, ${Math.max(0.1, intensity)})`;
                 }
             }
 
-            // Add indicator for secondary data in compare mode
-            let borderStyle = '1px solid rgba(255,255,255,0.1)';
-            if (state.mode === 'compare' && slot === 2) {
-                borderStyle = '2px solid rgba(255, 255, 255, 0.3)'; // Highlight secondary cells slightly
-            }
-
-            html += `<div title="${tooltip}" style="background:${color};padding:1rem;text-align:center;color:white;border:${borderStyle}">${displayVal}</div>`;
+            const textColor = (!isNaN(corr) && Math.abs(corr) > 0.5) ? 'white' : 'var(--text-color)';
+            const borderStyle = '1px solid rgba(255,255,255,0.1)';
+            html += `<div title="Correlation: ${FEATURES[rowF].label} vs ${FEATURES[colF].label}" style="background:${color};padding:1rem;text-align:center;color:${textColor};border:${borderStyle}">${displayVal}</div>`;
         });
     });
     el.innerHTML = html;
 }
 
-function calculateCorrelation(f1, f2, slot = 1) {
+function calculateCorrelation(f1, f2) {
     if (f1 === f2) return 1.0;
 
-    const cells = slot === 1 ? state.primaryData?.cells : state.secondaryData?.cells;
-    const feats = slot === 1 ? state.simulatedFeaturesPrimary : state.simulatedFeaturesSecondary;
+    const cells = state.primaryData?.cells;
+    const feats = state.simulatedFeaturesPrimary;
 
     if (!cells || !feats) return NaN;
 
@@ -360,19 +239,17 @@ function calculateCorrelation(f1, f2, slot = 1) {
         const x = feats[c.cell_id][f1];
         const y = feats[c.cell_id][f2];
 
-        // Filter invalid data (null, undefined, NaN, Infinity)
         if (x === null || y === null || !isFinite(x) || !isFinite(y)) continue;
 
         sumX += x; sumY += y; sumXY += x * y; sumX2 += x * x; sumY2 += y * y;
         n++;
     }
 
-    if (n < 2) return NaN; // Not enough data points
+    if (n < 2) return NaN;
 
     const num = n * sumXY - sumX * sumY;
     const den = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
 
-    // Handle constant arrays (variance is 0)
     if (den === 0) return 0;
 
     return num / den;

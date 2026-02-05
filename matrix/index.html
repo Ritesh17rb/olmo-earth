@@ -59,22 +59,13 @@
     </nav>
 
     <div class="main-container">
-        <!-- Sidebar -->
         <aside class="controls-panel">
             <div class="panel-header">
                 <h2 class="panel-title">Matrix Configuration</h2>
             </div>
 
             <div class="panel-section">
-                <label class="section-label">Analysis Mode</label>
-                <div class="view-tabs" style="width: 100%; margin-bottom: 0;">
-                    <div class="view-tab active" data-mode="single" style="flex: 1; text-align: center;">Single</div>
-                    <div class="view-tab" data-mode="compare" style="flex: 1; text-align: center;">Compare</div>
-                </div>
-            </div>
-
-            <div class="panel-section" id="selector-primary">
-                <label class="section-label">Primary Dataset</label>
+                <label class="section-label">Select City</label>
                 <div style="display: flex; gap: 0.5rem;">
                     <select id="city-select-1" class="feature-toggle select-input" style="flex: 2;">
                         <option value="bangalore">Bangalore</option>
@@ -88,70 +79,6 @@
                     </select>
                 </div>
             </div>
-
-            <div class="panel-section" id="selector-secondary"
-                style="display: none; border-left: 2px solid var(--accent-color); padding-left: 0.75rem;">
-                <label class="section-label" style="color: var(--accent-color);">Comparison Dataset</label>
-                <div style="display: flex; gap: 0.5rem;">
-                    <select id="city-select-2" class="feature-toggle select-input" style="flex: 2;">
-                        <option value="bangalore" selected>Bangalore</option>
-                        <option value="delhi">Delhi</option>
-                        <option value="paris">Paris</option>
-                        <option value="mariupol">Mariupol</option>
-                    </select>
-                    <select id="year-select-2" class="feature-toggle select-input" style="flex: 1;">
-                        <option value="2024">2024</option>
-                        <option value="2019" selected>2019</option>
-                    </select>
-                </div>
-                <!-- Removed animation controls as they were grid-specific -->
-            </div>
-
-            <div class="panel-section">
-                <div class="d-flex justify-content-between align-items-center">
-                    <label class="section-label">Feature Vector</label>
-                    <small style="color: var(--secondary-color); font-size: 0.7rem;">Select 2+ for correlation</small>
-                </div>
-
-                <div id="feature-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <!-- Feature List -->
-                    <div class="feature-toggle" data-feature="vegetation_index">
-                        <i class="bi bi-tree-fill" style="color: #22c55e;"></i> Vegetation Index (NDVI)
-                    </div>
-                    <div class="feature-toggle" data-feature="urban_density">
-                        <i class="bi bi-building-fill" style="color: #3b82f6;"></i> Urban Density
-                    </div>
-                    <div class="feature-toggle" data-feature="spatial_heterogeneity">
-                        <i class="bi bi-grid-3x3" style="color: #a855f7;"></i> Urban Texture
-                    </div>
-                    <div class="feature-toggle" data-feature="uhi_risk_index">
-                        <i class="bi bi-thermometer-high" style="color: #ef4444;"></i> Urban Heat Risk
-                    </div>
-                    <div class="feature-toggle" data-feature="modified_water_index">
-                        <i class="bi bi-droplet-fill" style="color: #06b6d4;"></i> Water Bodies (MNDWI)
-                    </div>
-                    <div class="feature-toggle" data-feature="bare_soil_index">
-                        <i class="bi bi-square-fill" style="color: #d97706;"></i> Bare Soil Index
-                    </div>
-                    <div class="feature-toggle" data-feature="normalized_burn_ratio">
-                        <i class="bi bi-activity" style="color: #10b981;"></i> Land Health (NBR)
-                    </div>
-                    <div class="feature-toggle" data-feature="index_based_built_up_index">
-                        <i class="bi bi-bricks" style="color: #f97316;"></i> True Built-up (IBI)
-                    </div>
-                    <div class="feature-toggle" data-feature="red_edge_index">
-                        <i class="bi bi-flower1" style="color: #84cc16;"></i> Dense Veg (NDRE)
-                    </div>
-                    <div class="feature-toggle" data-feature="surface_albedo">
-                        <i class="bi bi-sun-fill" style="color: #eab308;"></i> Surface Albedo
-                    </div>
-                    <div class="feature-toggle" data-feature="built_up_texture">
-                        <i class="bi bi-house-door-fill" style="color: #6366f1;"></i> Built-up Texture
-                    </div>
-                </div>
-            </div>
-
-
         </aside>
 
         <!-- Main Content -->
